@@ -14,12 +14,18 @@ public class XMLParser {
 		//empty constructor
 	}
 	
-	public static void main(String argv[]) {
+	public static void main(String args[]) {
+		if (args.length != 1) {
+			System.err.println("Signle argument to file to parse is required.");
+			System.exit(1);
+		}
+		
+		String fileName = args[0];
 		 
 	    try {
 	    	
 	    //could get it to read 
-	    File fXmlFile = new File("/Users/Seemai/Desktop/rel200/quran/quran.xml");
+	    File fXmlFile = new File(fileName);
 	    BufferedReader br = new BufferedReader(new FileReader(fXmlFile));
 	    String line;
 	    	

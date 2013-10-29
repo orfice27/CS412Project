@@ -9,11 +9,17 @@
 		 
 		public class Parser {
 		 
-		  public static void main(String argv[]) {
-		 
+		  public static void main(String args[]) {
+			if (args.length != 1) {
+				System.err.println("Signle argument to file to parse is required.");
+				System.exit(1);
+			}
+
+		  	String fileName = args[0];
+
 		    try {
 		 
-			File fXmlFile = new File("/Users/Seemai/Desktop/rel200/quran/quran.xml");
+			File fXmlFile = new File(fileName);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);
