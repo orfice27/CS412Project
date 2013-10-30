@@ -19,23 +19,23 @@ public class XMLParser {
 		 */
 			
         public static void main(String args[]) {
-        	boolean fileOutput = false;
-        	switch(args.length){                   
-             case(1):
-             	System.out.println("Parsed content follows:");
-             	break;
-             case(3):
-            	fileOutput=true; 
-            	System.out.println("Parsed file can be found: "+args[2]+args[1]+".txt");
-             	break;
-             default:
-             	System.out.println("Invalid argument provided - Arguments should be either of the form:\n"
-             			+ "'XMLParser <xml filepath>' if command line output desired \n\tor\n"
-             			+ "Should output be desired in the form of a .txt file:\n"
-             			+ "'XMLparser <xmlfilepath> <outputfilename> <outputfilelocation>'");
-             	System.exit(0);
-             
-       }	
+		boolean fileOutput = false;
+		switch(args.length){                   
+	             case(1):
+	             	System.out.println("Parsed content follows:");
+	             	break;
+	             case(3):
+	            	fileOutput=true; 
+	            	System.out.println("Parsed file can be found: "+args[2]+args[1]+".txt");
+	             	break;
+	             default:
+	             	System.out.println("Invalid argument provided - Arguments should be either of the form:\n"
+	             			+ "'XMLParser <xml filepath>' if command line output desired \n\tor\n"
+	             			+ "Should output be desired in the form of a .txt file:\n"
+	             			+ "'XMLparser <xmlfilepath> <outputfilename> <outputfilelocation>'");
+	             	System.exit(0);
+	             
+	       }	
             String fileName = args[0];
         	File fXmlFile = new File(fileName);
         	try{
