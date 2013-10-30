@@ -57,8 +57,6 @@ public class XMLParser {
                         sb.append(word);
                     } 
                     content.add(sb.toString());
-//                    String finalResult = sb.toString();
-//                    System.out.println(finalResult);
                     if(fileOutput){
                     	outputToFile(args[2], args[1], content);
                     }
