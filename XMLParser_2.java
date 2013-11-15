@@ -1,6 +1,8 @@
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -9,66 +11,72 @@ import java.util.StringTokenizer;
 
 public class XMLParser {
               
-              
+                /**
+                 * David here,
+                 * For some reason this completely bombs the speed at which this runs. Will investigate it
+                 * tomorrow, but for now i've committed it as a separate file. If anyone can see why this is the case
+                 * then please amend as required or suggest that I do it. 
+                 */
                         
         public static void main(String args[]) {
-                boolean fileOutput = false;
-                BufferedWriter output=null;
-                File file=null;
-                switch(args.length){                   
-                     case(1):
-                             System.out.println("Parsed content follows:");
-                             break;
-                     case(3):
-                            fileOutput=true; 
-                            System.out.println("Parsed file can be found: "+args[2] + args[1]+".txt");
-                             break;
-                     default:
-                             System.out.println("Invalid argument provided - Arguments should be either of the form:\n"
-                                             + "'XMLParser <xml filepath>' if command line output desired \n\tor\n"
-                                             + "Should output be desired in the form of a .txt file:\n"
-                                             + "'XMLparser <xmlfilepath> <outputfilename> <outputfilelocation>'");
-                             System.exit(0);
-                     
-               }        
+            boolean fileOutput = false;
+           	BufferedWriter output=null;
+            File file=null;
+            switch(args.length){                   
+                 case(1):
+                        System.out.println("Parsed content follows:");
+                        break;
+                 case(2):
+                	 	fileOutput=true; 
+                        break;
+                 default:
+                         System.out.println("Invalid argument provided - Arguments should be either of the form:\n"
+                                         + "'XMLParser <xml filepath>' if command line output desired \n\tor\n"
+                                         + "Should output be desired in the form of a plain file:\n"
+                                         + "'XMLparser <xmlfilepath> <outputfilepath>'");
+                         System.exit(0);
+                 
+            }        
             String fileName = args[0];
-                File fXmlFile = new File(fileName);
-                try{
-            BufferedReader br = new BufferedReader(new FileReader(fXmlFile));
-            String line;
-            ArrayList<String> source=new ArrayList<String>();
-            //could get it to read             
-            if(fileOutput){ 
-            	 file = new File(args[1]);
-                 output = new BufferedWriter(new FileWriter(file)); 
-                     }
-
-                      
-              while((line=br.readLine())!= null){
-              
-                    //get the words from the line that we want to keep
-                          source = extractWords(line);                
-                                      
-                    StringBuilder sb = new StringBuilder(50);
-                    for (String word : source){
-                        sb.append(' ');                        
-                        sb.append(word);
-                       
-                    } 
-                    if(fileOutput){                    	
-                    	  output.write(sb.toString());
-                          output.write("\n");
-                    }
-                  
-                    else{
-                    	System.out.println(sb.toString());
-                    	}
-              		}
-              		br.close();
-                 }catch(Exception e){
-                         e.printStackTrace();
-                 }                       
-          }
+            File fXmlFile = new File(fileName);
+            try{
+	            BufferedReader br = new BufferedReader(new FileReader(fXmlFile));
+	            String line;
+	            ArrayList<String> source=new ArrayList<String>();
+	            //could get it to read             
+	            if(fileOutput){ 
+	            	 file = new File(args[1]);
+	                 output = new BufferedWriter(new  FileWriter(file));
+	                 System.out.println("Parsed file can be found: " +args[1]);
+	                     }
+	
+	                      
+	              while((line=br.readLine())!= null){
+	              
+	                    //get the words from the line that we want to keep
+	                          source = extractWords(line);                
+	                                      
+	                    StringBuilder sb = new StringBuilder(50);
+	                    for (String word : source){
+	                        sb.append(' ');                        
+	                        sb.append(word);
+	                       
+	                    } 
+	                    if(fileOutput){                    	
+	                    	  output.write(sb.toString());
+	                          output.write("\n");
+	                          output.flush();
+	                    }
+	                  
+	                    else{
+	                    	System.out.println(sb.toString());
+	                    	}
+	              		}
+	              		br.close();
+	                 }catch(Exception e){
+	                         e.printStackTrace();
+	                 }                       
+	          }
         
       
         /**
