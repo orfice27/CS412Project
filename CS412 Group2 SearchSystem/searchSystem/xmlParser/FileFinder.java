@@ -8,7 +8,8 @@ import java.util.ArrayList;
  * @author David Coxon
  * 
  * Simple class which takes in two strings, one a file path and the other 
- * an extension, and checks if 
+ * an extension, and gathers all files of that extension contained by that
+ * filepath
  *
  */
 public class FileFinder {
