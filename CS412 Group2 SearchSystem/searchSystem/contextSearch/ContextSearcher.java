@@ -10,8 +10,8 @@ import java.util.Map;
 
 /**
  *  
- * @author User
- *
+ * @author Iain Dobbin
+ * Allows the return of query contextual highlited  data to be used further within project.
  */
 public class ContextSearcher {
 
