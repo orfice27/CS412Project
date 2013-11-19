@@ -1,18 +1,12 @@
 package searcher;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StoredField;
-import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -31,8 +25,6 @@ import xmlParser.XMLParser;
 public class Searcher {
 
 	private static final Version LUCENE_VERSION = Version.LUCENE_45;
-	private static final String FIELD_CONTENT = "CONTENT";
-	private static final String FIELD_FILENAME = "FILENAME";
 
 	private String root;
 	private String queryString;
@@ -60,10 +52,18 @@ public class Searcher {
 		iwriter.close();
 	}
 
+	private void parseDocuments(IndexWriter iwriter) throws IOException {
+		List<File> files = new XMLParser(this.root).getParsedFiles();
+		List<Document> docs = new SearcherDocuments(files).getDocuments();
+		for (Document doc : docs) {
+			iwriter.addDocument(doc);
+		}
+	}
+
 	private void queryIndex() throws IOException, ParseException {
 		DirectoryReader ireader = DirectoryReader.open(this.directory);
 		this.isearcher = new IndexSearcher(ireader);
-		QueryParser parser = new QueryParser(Searcher.LUCENE_VERSION, Searcher.FIELD_CONTENT, this.analyzer);
+		QueryParser parser = new QueryParser(Searcher.LUCENE_VERSION, SearcherDocuments.FIELD_CONTENT, this.analyzer);
 		Query query = parser.parse(this.queryString);
 		this.searchResult = this.isearcher.search(query, null, 1000);
 		this.handleResults();
@@ -75,37 +75,8 @@ public class Searcher {
 		ScoreDoc[] hits = this.searchResult.scoreDocs;
 		for (int i = 0; i < hits.length; i++) {
 			Document hitDoc = isearcher.doc(hits[i].doc);
-			System.out.printf("%s: %s\n", Searcher.FIELD_FILENAME, hitDoc.get(Searcher.FIELD_FILENAME));
+			System.out.printf("%s: %s\n", SearcherDocuments.FIELD_FILENAME, hitDoc.get(SearcherDocuments.FIELD_FILENAME));
 		}
-	}
-
-	private void parseDocuments(IndexWriter iwriter) throws IOException {
-		List<File> files = new XMLParser(this.root).getParsedFiles();
-		List<Document> docs = this.filesToDocuments(files);
-		for (Document doc : docs) {
-			iwriter.addDocument(doc);
-		}
-	}
-
-	private List<Document> filesToDocuments(List<File> files) {
-		List<Document> docs = new ArrayList<Document>();
-		for (File file : files) {
-			Document doc = new Document();
-			doc.add(new Field(Searcher.FIELD_FILENAME, file.getName(), StoredField.TYPE));
-			doc.add(new Field(Searcher.FIELD_CONTENT, this.fileToString(file), TextField.TYPE_STORED));
-			docs.add(doc);
-		}
-		return docs;
-	}
-
-	private String fileToString(File file) {
-		String content = "";
-		try {
-			content = new Scanner(new File(file.getAbsolutePath())).useDelimiter("\\Z").next();
-		} catch (FileNotFoundException e) {
-			System.err.printf("Error reading file %s: %s\n", file.getName(), e.getMessage());
-		}
-		return content;
 	}
 
 
