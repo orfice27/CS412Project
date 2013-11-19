@@ -54,46 +54,46 @@ public class Searcher {
 	}
 
 	private void setupIndex() throws IOException {
-	    IndexWriterConfig config = new IndexWriterConfig(Searcher.LUCENE_VERSION, analyzer);
-	    IndexWriter iwriter = new IndexWriter(this.directory, config);
-	    this.parseDocuments(iwriter);
-	    iwriter.close();
+		IndexWriterConfig config = new IndexWriterConfig(Searcher.LUCENE_VERSION, analyzer);
+		IndexWriter iwriter = new IndexWriter(this.directory, config);
+		this.parseDocuments(iwriter);
+		iwriter.close();
 	}
 
 	private void queryIndex() throws IOException, ParseException {
 		DirectoryReader ireader = DirectoryReader.open(this.directory);
-	    this.isearcher = new IndexSearcher(ireader);
-	    QueryParser parser = new QueryParser(Searcher.LUCENE_VERSION, Searcher.FIELD_CONTENT, this.analyzer);
-	    Query query = parser.parse(this.queryString);
-	    this.searchResult = this.isearcher.search(query, null, 1000);
-	    this.handleResults();
-	    ireader.close();
-	    directory.close();
+		this.isearcher = new IndexSearcher(ireader);
+		QueryParser parser = new QueryParser(Searcher.LUCENE_VERSION, Searcher.FIELD_CONTENT, this.analyzer);
+		Query query = parser.parse(this.queryString);
+		this.searchResult = this.isearcher.search(query, null, 1000);
+		this.handleResults();
+		ireader.close();
+		directory.close();
 	}
 
 	private void handleResults() throws IOException {
 		ScoreDoc[] hits = this.searchResult.scoreDocs;
-	    for (int i = 0; i < hits.length; i++) {
-	      Document hitDoc = isearcher.doc(hits[i].doc);
-	      System.out.printf("%s: %s\n", Searcher.FIELD_FILENAME, hitDoc.get(Searcher.FIELD_FILENAME));
-	    }
+		for (int i = 0; i < hits.length; i++) {
+			Document hitDoc = isearcher.doc(hits[i].doc);
+			System.out.printf("%s: %s\n", Searcher.FIELD_FILENAME, hitDoc.get(Searcher.FIELD_FILENAME));
+		}
 	}
 
 	private void parseDocuments(IndexWriter iwriter) throws IOException {
 		List<File> files = new XMLParser(this.root).getParsedFiles();
 		List<Document> docs = this.filesToDocuments(files);
-	    for (Document doc : docs) {
-		    iwriter.addDocument(doc);
-	    }		
+		for (Document doc : docs) {
+			iwriter.addDocument(doc);
+		}
 	}
 
 	private List<Document> filesToDocuments(List<File> files) {
 		List<Document> docs = new ArrayList<Document>();
 		for (File file : files) {
 			Document doc = new Document();
-		    doc.add(new Field(Searcher.FIELD_FILENAME, file.getName(), StoredField.TYPE));
-		    doc.add(new Field(Searcher.FIELD_CONTENT, this.fileToString(file), TextField.TYPE_STORED));
-		    docs.add(doc);
+			doc.add(new Field(Searcher.FIELD_FILENAME, file.getName(), StoredField.TYPE));
+			doc.add(new Field(Searcher.FIELD_CONTENT, this.fileToString(file), TextField.TYPE_STORED));
+			docs.add(doc);
 		}
 		return docs;
 	}
@@ -114,7 +114,7 @@ public class Searcher {
 			System.err.printf("Usage: %s [query] [file]\n", Searcher.class.getSimpleName());
 			System.exit(0);
 		}
-		
+
 		String queryString = args[0];
 		String fileOrDir = args[1];
 
