@@ -41,9 +41,9 @@ public class SearcherDocuments {
 
 	private Document fileToDocument(File file) {
 		Document doc = new Document();
-	    doc.add(new Field(SearcherDocuments.FIELD_FILENAME, file.getName(), StoredField.TYPE));
-	    doc.add(new Field(SearcherDocuments.FIELD_CONTENT, this.fileToString(file), TextField.TYPE_STORED));
-	    return doc;
+		doc.add(new Field(SearcherDocuments.FIELD_FILENAME, file.getName(), StoredField.TYPE));
+		doc.add(new Field(SearcherDocuments.FIELD_CONTENT, this.fileToString(file), TextField.TYPE_STORED));
+		return doc;
 	}
 
 	private String fileToString(File file) {
