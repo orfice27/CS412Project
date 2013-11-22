@@ -33,6 +33,15 @@ public class Searcher {
 	private TopDocs searchResult;
 	private IndexSearcher isearcher;
 
+	/**
+	 * Creates an instance of searcher , given the root absolute path and a 
+	 * query the user wish to perform upon the system.
+	 * @param root - the absolute path the of the users root 
+	 * folder to the file corpus to be searched upon.
+	 * 
+	 * @param queryString the query the user wishes to check exists 
+	 * within the file corpus.
+	 */
 	public Searcher(String root, String queryString) {
 		this.root = root;
 		this.queryString = queryString;
@@ -44,14 +53,21 @@ public class Searcher {
 		this.setupIndex();
 		this.queryIndex();
 	}
-
+	/**
+	 * Creates the initial index from the users given root file directory path.
+	 * @throws IOException  the given root may contain no documents.
+	 */
 	private void setupIndex() throws IOException {
 		IndexWriterConfig config = new IndexWriterConfig(Searcher.LUCENE_VERSION, analyzer);
 		IndexWriter iwriter = new IndexWriter(this.directory, config);
 		this.parseDocuments(iwriter);
 		iwriter.close();
 	}
-
+	/**
+	 * Using a given indexWriter creates a list of all files contained below the root directory path.
+	 * @param iwriter - the given root directory's indexWriter
+	 * @throws IOException the given root may contain no documents.
+	 */
 	private void parseDocuments(IndexWriter iwriter) throws IOException {
 		List<File> files = new XMLParser(this.root).getParsedFiles();
 		List<Document> docs = new SearcherDocuments(files).getDocuments();
@@ -59,7 +75,11 @@ public class Searcher {
 			iwriter.addDocument(doc);
 		}
 	}
-
+	/**
+	 * Inspects an index of documents given a users query.
+	 * @throws IOException
+	 * @throws ParseException
+	 */
 	private void queryIndex() throws IOException, ParseException {
 		DirectoryReader ireader = DirectoryReader.open(this.directory);
 		this.isearcher = new IndexSearcher(ireader);
@@ -71,6 +91,10 @@ public class Searcher {
 		directory.close();
 	}
 
+	/**
+	 * Sorts the search results of a user query by scoring them in terms of appropriateness to the user query
+	 * @throws IOException
+	 */
 	private void handleResults() throws IOException {
 		ScoreDoc[] hits = this.searchResult.scoreDocs;
 		for (int i = 0; i < hits.length; i++) {
