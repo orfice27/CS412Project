@@ -1,0 +1,1 @@
+jade -d common/p$2.dsl -t rtf -o $1/$1.rtf common/xml.dcl $1/$1.xml

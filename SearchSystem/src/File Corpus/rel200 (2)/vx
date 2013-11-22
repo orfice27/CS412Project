@@ -1,0 +1,5 @@
+SP_ENCODING=XML; export SP_ENCODING
+SGML_CATALOG_FILES=common/xml.soc; export SGML_CATALOG_FILES
+nsgmls -wxml -uegs $1/$1.xml
+SP_ENCODING=; export SP_ENCODING
+SGML_CATALOG_FILES=catalog; export SGML_CATALOG_FILES

@@ -1,0 +1,4 @@
+SP_ENCODING=; export SP_ENCODING
+SGML_CATALOG_FILES=catalog; export SGML_CATALOG_FILES
+SP_CHARSET_FIXED=YES; export SP_CHARSET_FIXED
+nsgmls -uegs common/xml.dcl $1/$1.xml
