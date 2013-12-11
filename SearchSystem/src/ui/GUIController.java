@@ -5,12 +5,15 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 import model.SearchResult;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
+
 import searcher.Searcher;
 
 public class GUIController implements ActionListener{
@@ -29,8 +32,32 @@ public class GUIController implements ActionListener{
 		switch(e.getActionCommand()){
 		case "query":	
 			//Run context searcher on query
+			if(guiobject.getTxtpnSearchGui().isEmpty()){
+				System.out.println("error");
+				
+				JFrame frame = guiobject.getFrame();
+				//custom title, error icon
+				JOptionPane.showMessageDialog(frame,
+				    "No query was entered.",
+				    "Empty query",
+				    JOptionPane.ERROR_MESSAGE);
+			} else if (containsDigit(guiobject.getTxtpnSearchGui())==true){
+				System.out.println("number error");
+				
+				JFrame frame = guiobject.getFrame();
+				//custom title, error icon
+				JOptionPane.showMessageDialog(frame,
+				    "Numbers are not accepted. Try again.",
+				    "Invalid query",
+				    JOptionPane.ERROR_MESSAGE);
+			}else {
+			
+				
+			
 			String query = guiobject.getTxtpnSearchGui();
-			Searcher searcher = new Searcher("C:\\Users\\David\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
+			
+			//you need to change to the name here to work, so it points to your local dataset folder
+			Searcher searcher = new Searcher("C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
 
 			try {
 				results = (ArrayList)searcher.search();
@@ -41,16 +68,33 @@ public class GUIController implements ActionListener{
 			}
 
 			searchTerms.add(query); //add the term to a list so we can use again later
-			guiobject.printResults(results); //this displays query to right		
+			guiobject.printResults(results); //this displays results to right pane
 
-			guiobject.addNewTab(query, guiobject.printResults(results));
+			guiobject.addNewTab(query, guiobject.printResults(results)); //this adds a new tab for each query 
 			guiobject.setTabsPane(results); //this ADDS document names to the eventually browsable left pane
 			
 			break;
+			}
+			
 		case "nquery":
 			//Create a new query view
 			break;
 		}
+	}
+	
+	//just an internal method for checking numbers
+	private boolean containsDigit(String s){  
+	    boolean containsDigit = false;
+
+	    if(s != null){
+	        for(char c : s.toCharArray()){
+	            if(containsDigit = Character.isDigit(c)){
+	                break;
+	            }
+	        }
+	    }
+
+	    return containsDigit;
 	}
 
 }

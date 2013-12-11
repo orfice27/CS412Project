@@ -283,7 +283,9 @@ public class GUI {
 		tabViewer.addTab(title, component);
 	}
 	
-	
+	public JFrame getFrame(){
+		return frame;
+	}
 	
 
 }
