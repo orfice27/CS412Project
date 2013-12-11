@@ -15,27 +15,27 @@ import java.util.ArrayList;
 public class FileFinder {
 	private String ext;
 	private ArrayList<File> filteredFiles;
-	
+
 	public FileFinder(String path, String ext){
 		this.ext=ext;
 		filteredFiles = new ArrayList<File>();
 		scanForExt(new File(path));
 	}
-	
+
 	public ArrayList<File> getSelectedFiles(){
 		return filteredFiles;
 	}
-	
+
 	private void scanForExt(File f){		
-			if (f.isDirectory()){
-				for(File p: f.listFiles()){
+		if (f.isDirectory()){
+			for(File p: f.listFiles()){
 				scanForExt(p);
 			}
-			}
-			else{
-				if(f.getName().endsWith(ext)){
-					filteredFiles.add(f);
-				}			
-			}						
+		}
+		else{
+			if(f.getName().endsWith(ext)){
+				filteredFiles.add(f);
+			}			
+		}						
 	}
 }
