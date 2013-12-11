@@ -116,7 +116,9 @@ public class GUI {
 		JSplitPane textSplitPane= new JSplitPane(1,tabPane,resultsPane);
 		textSplitPane.setDividerLocation(80);		
 		//Splits buttonPanel and textSplitPanel vertically
-		frame.add(new JSplitPane(0,buttonPanel,textSplitPane));
+		JSplitPane verticalPane= new JSplitPane(0,buttonPanel,textSplitPane);
+		verticalPane.setEnabled(false);
+		frame.add(verticalPane);
 		
 		//MenuBar to provide added functionality
 		JMenuBar menuBar = new JMenuBar();
