@@ -9,10 +9,12 @@ import java.util.List;
 
 import model.SearchResult;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -49,6 +51,7 @@ public class GUI {
 	private JTextField txtpnSearchGui;
 	JTextArea resultsPane;
 	JTextPane tabPane;
+	JTabbedPane tabViewer;
 	String newline = "\n";
 
 	/**
@@ -97,7 +100,7 @@ public class GUI {
 
 		//Initialise frame
 		frame = new JFrame();
-		frame.setBounds(100, 100, 630, 507);
+		frame.setBounds(100, 100, 800, 507);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(true);
 
@@ -117,7 +120,9 @@ public class GUI {
 		JButton button = new JButton("Query");
 		buttonPanel.add(button);		
 		button.setActionCommand("query");
-		button.addActionListener(controller);		
+		button.addActionListener(controller);	
+		
+		
 
 		//Results Text Area
 		resultsPane = new JTextArea(); //2
@@ -126,10 +131,15 @@ public class GUI {
 		//TabPane
 		tabPane = new JTextPane(); //1
 		tabPane.setEditable(false);
+		
+		//tab viewe
+		tabViewer = new JTabbedPane();
+		
+		
 
 
 		//Splits tabPane and results pane
-		JSplitPane textSplitPane= new JSplitPane(1,tabPane,resultsPane);
+		JSplitPane textSplitPane= new JSplitPane(1,tabPane,tabViewer);
 		textSplitPane.setDividerLocation(80);		
 
 		//Splits buttonPanel and textSplitPanel vertically, locks the divider in place
@@ -232,16 +242,20 @@ public class GUI {
 	}
 
 
-	public void printResults(ArrayList<SearchResult> r){
-		resultsPane.setText("");
+	public JTextArea printResults(ArrayList<SearchResult> r){
+		
+		JTextArea resultDisplayArea = new JTextArea();
+		resultDisplayArea.setText("");
+		//resultsPane.setText("");
 		for(SearchResult s: r){
-			resultsPane.append("Results Found in "+s.getFileName()+" at "+s.getFilePath());
-			resultsPane.append("\n-----------------------------------------------------\n\n");
+			resultDisplayArea.append("Results Found in "+s.getFileName()+" at "+s.getFilePath());
+			resultDisplayArea.append("\n-----------------------------------------------------\n\n");
 			for(String str : s.getResults()){
-				resultsPane.append(str+"\n");
+				resultDisplayArea.append(str+"\n");
 			}
 			
 		}
+		return resultDisplayArea;
 	}
 	/**
 	 * Sets the text of the left text pane, the tab pane
@@ -253,5 +267,11 @@ public class GUI {
 			tabPane.setText(tabPane.getText()+s.getFileName()+"\n");
 		}
 	}
+	
+	public void addNewTab(String title, JComponent component){
+		tabViewer.addTab(title, component);
+	}
+	
+	
 
 }
