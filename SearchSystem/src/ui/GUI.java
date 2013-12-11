@@ -2,21 +2,22 @@ package ui;
 
 
 import java.awt.EventQueue;
-import java.util.ArrayList;
+import java.awt.FlowLayout;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.JTextArea;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.text.Document;
-import javax.swing.text.JTextComponent;
+
+	import javax.swing.JFrame;
+	import javax.swing.JPanel;
+	import javax.swing.JButton;
+	import javax.swing.JSplitPane;
+	import javax.swing.JTextField;
+	import javax.swing.JTextPane;
+	import javax.swing.JMenuBar;
+	import javax.swing.JMenu;
+	import javax.swing.JMenuItem;
+	import javax.swing.text.Document;
+	import javax.swing.text.JTextComponent;
 
 import wordAutocomplete.AutoCompleteDocument;
 import wordAutocomplete.CompletionService;
@@ -41,8 +42,8 @@ public class GUI {
 	private JFrame frame;
 	private GUIController controller;
 	private JTextField txtpnSearchGui;
-	JTextArea textArea;
-	JTextArea textPane;
+	JTextPane resultsPane;
+	JTextPane tabPane;
 	String newline = "\n";
 
 	/**
@@ -67,66 +68,66 @@ public class GUI {
 	public GUI() {
 		initialize();
 	}
+	
+	
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
 		
+		
 		controller = new GUIController(this);
 		
 		//Initialise frame
 		frame = new JFrame();
-		frame.setResizable(false);
 		frame.setBounds(100, 100, 630, 507);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frame.setResizable(true);
+		
 		
 		//Create Jpanel, add it to contentpane
-		JPanel panel = new JPanel();
-		panel.setBounds(0, 16, 1, 345);
-		frame.getContentPane().add(panel);
-		panel.setLayout(null);
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		
 		
 		//Text field for query, triggers a search when enter is pressed
-		txtpnSearchGui = new JTextField();
-		txtpnSearchGui.setBounds(12, 11, 169, 20);
-        txtpnSearchGui.setText("Search GUI");
+		txtpnSearchGui = new JTextField(40);
+		txtpnSearchGui.setText("Search GUI");
         txtpnSearchGui.addActionListener(controller);
         txtpnSearchGui.setActionCommand("query");
-        frame.getContentPane().add(txtpnSearchGui);
-		
+        buttonPanel.add(txtpnSearchGui);		
 		
 		//Button to trigger query
 		JButton button = new JButton("Query");
-		button.setBounds(193, 6, 117, 29);
-		frame.getContentPane().add(button);		
+		buttonPanel.add(button);		
 		button.setActionCommand("query");
-		button.addActionListener(controller);
-		
-		
+		button.addActionListener(controller);		
+
 		//Results Text Area
-		textArea = new JTextArea(); //2
-		textArea.setEditable(false);
-		textArea.setBounds(313, 42, 303, 414);
-		frame.getContentPane().add(textArea);
+		resultsPane = new JTextPane(); //2
+		resultsPane.setEditable(false);
 		
-		//
-		textPane = new JTextArea(); //1
-		textPane.setEditable(false);
-		textPane.setBounds(13, 42, 273, 414);
-		frame.getContentPane().add(textPane);
+		//TabPane
+		tabPane = new JTextPane(); //1
+		tabPane.setEditable(false);
 		
+		
+		//Splits tabPane andd results pane
+		JSplitPane textSplitPane= new JSplitPane(1,tabPane,resultsPane);
+		textSplitPane.setDividerLocation(80);		
+		//Splits buttonPanel and textSplitPanel vertically
+		frame.add(new JSplitPane(0,buttonPanel,textSplitPane));
+		
+		//MenuBar to provide added functionality
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
+		//Creates a 'New' menu, with the ability to create a new query window
 		JMenu mnMenu = new JMenu("New");
 		menuBar.add(mnMenu);
-		
-		JMenuItem newQuery = new JMenuItem("New Query");
+		JMenuItem newQuery = new JMenuItem("New Query Window");
 		mnMenu.add(newQuery);
-		newQuery.setActionCommand("nquery");
+		newQuery.setActionCommand("nwindow");
 		newQuery.addActionListener(controller);
 		
 		JMenu mnMenu_1 = new JMenu("Options");
@@ -213,12 +214,11 @@ public class GUI {
 
 	
 	public void setTextArea(String s){
-		this.textArea.setText(s);
+		this.resultsPane.setText(s);
 	}
 	
 	public void setTextPane(String s){
-
-		this.textPane.append(s + newline);
+		this.tabPane.setText(this.tabPane.getText()+s+"\n");
 		
 	}
 	
