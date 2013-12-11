@@ -11,7 +11,6 @@ import model.SearchResult;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
-
 import searcher.Searcher;
 
 public class GUIController implements ActionListener{
@@ -31,13 +30,7 @@ public class GUIController implements ActionListener{
 		case "query":	
 			//Run context searcher on query
 			String query = guiobject.getTxtpnSearchGui();
-
-			Searcher searcher = new Searcher("C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
-			
-			
-			
-		
-
+			Searcher searcher = new Searcher("C:\\Users\\David\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
 
 			try {
 				results = (ArrayList)searcher.search();
@@ -45,16 +38,14 @@ public class GUIController implements ActionListener{
 					| InvalidTokenOffsetsException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			
 			}
-			
-			guiobject.addNewTab(query, guiobject.printResults(results));
+
 			searchTerms.add(query); //add the term to a list so we can use again later
-			 //this displays query to right
+			guiobject.printResults(results); //this displays query to right		
+
+			guiobject.addNewTab(query, guiobject.printResults(results));
 			guiobject.setTabsPane(results); //this ADDS document names to the eventually browsable left pane
 			
-			
-
 			break;
 		case "nquery":
 			//Create a new query view
