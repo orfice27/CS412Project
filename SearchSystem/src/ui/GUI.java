@@ -2,6 +2,7 @@ package ui;
 
 
 import java.awt.EventQueue;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,6 +41,9 @@ public class GUI {
 	private JFrame frame;
 	private GUIController controller;
 	private JTextField txtpnSearchGui;
+	JTextArea textArea;
+	JTextArea textPane;
+	String newline = "\n";
 
 	/**
 	 * Launch the application.
@@ -103,13 +107,13 @@ public class GUI {
 		
 		
 		//Results Text Area
-		JTextPane textArea = new JTextPane();
+		textArea = new JTextArea(); //2
 		textArea.setEditable(false);
 		textArea.setBounds(313, 42, 303, 414);
 		frame.getContentPane().add(textArea);
 		
 		//
-		JTextPane textPane = new JTextPane();
+		textPane = new JTextArea(); //1
 		textPane.setEditable(false);
 		textPane.setBounds(13, 42, 273, 414);
 		frame.getContentPane().add(textPane);
@@ -207,11 +211,16 @@ public class GUI {
 		return txtpnSearchGui.getText();
 	}
 
-	public void setTxtpnSearchGui(JTextField txtpnSearchGui) {
-		this.txtpnSearchGui = txtpnSearchGui;
+	
+	public void setTextArea(String s){
+		this.textArea.setText(s);
 	}
 	
-	
+	public void setTextPane(String s){
+
+		this.textPane.append(s + newline);
+		
+	}
 	
 	
 }
