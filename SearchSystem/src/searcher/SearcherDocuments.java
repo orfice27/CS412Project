@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.TextField;
 
@@ -15,6 +16,7 @@ public class SearcherDocuments {
 
 	public static final String FIELD_FILENAME = "filename";
 	public static final String FIELD_CONTENT  = "content";
+	public static final String FIELD_CONTENT_TV = "content_tv";
 
 	private List<File> files;
 	private List<Document> documents;
@@ -41,8 +43,21 @@ public class SearcherDocuments {
 
 	private Document fileToDocument(File file) {
 		Document doc = new Document();
-		doc.add(new Field(SearcherDocuments.FIELD_FILENAME, file.getName(), StoredField.TYPE));
-		doc.add(new Field(SearcherDocuments.FIELD_CONTENT, this.fileToString(file), TextField.TYPE_STORED));
+
+		doc.add(new Field(SearcherDocuments.FIELD_FILENAME, file.getAbsolutePath(), StoredField.TYPE));
+
+		String content = this.fileToString(file);
+		doc.add(new Field(SearcherDocuments.FIELD_CONTENT, content, TextField.TYPE_STORED));
+
+		FieldType type = new FieldType();
+		type.setIndexed(true);
+		type.setStored(true);
+		type.setStoreTermVectors(true);
+		type.setStoreTermVectorOffsets(true);
+		type.setStoreTermVectorPayloads(true);
+		type.setStoreTermVectorPositions(true);
+		doc.add(new Field(SearcherDocuments.FIELD_CONTENT_TV, content, type));
+
 		return doc;
 	}
 
