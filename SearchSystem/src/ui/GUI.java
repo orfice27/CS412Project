@@ -9,12 +9,14 @@ import java.util.List;
 
 import model.SearchResult;
 
-import javax.swing.JComponent;
+
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -25,6 +27,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+import javax.swing.JComponent;
+import javax.swing.JTabbedPane;
 
 import wordAutocomplete.AutoCompleteDocument;
 import wordAutocomplete.CompletionService;
@@ -49,10 +53,9 @@ public class GUI {
 	private JFrame frame;
 	private GUIController controller;
 	private JTextField txtpnSearchGui;
-	JTextArea resultsPane;
-	JTextPane tabPane;
-	JTabbedPane tabViewer;
-	String newline = "\n";
+	private	JTextArea resultsArea;
+	private JTextPane tabPane;
+	private JTabbedPane tabViewer;
 
 	/**
 	 * Launch the application.
@@ -100,7 +103,8 @@ public class GUI {
 
 		//Initialise frame
 		frame = new JFrame();
-		frame.setBounds(100, 100, 800, 507);
+		frame.setSize(800,800);
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(true);
 
@@ -125,22 +129,26 @@ public class GUI {
 		
 
 		//Results Text Area
-		resultsPane = new JTextArea(); //2
-		resultsPane.setEditable(false);
-
-		//TabPane
-		tabPane = new JTextPane(); //1
+		resultsArea = new JTextArea(); //2
+		resultsArea.setEditable(false);	
+		
+		tabPane= new JTextPane();
 		tabPane.setEditable(false);
-		
-		//tab viewe
-		tabViewer = new JTabbedPane();
-		
-		
 
+		JScrollPane documentScroll = new JScrollPane(tabPane, 
+				   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+		JScrollPane resultsScroll = new JScrollPane(resultsArea, 
+				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		//tab viewer
+		tabViewer = new JTabbedPane();
+
+		
 
 		//Splits tabPane and results pane
-		JSplitPane textSplitPane= new JSplitPane(1,tabPane,tabViewer);
-		textSplitPane.setDividerLocation(80);		
+		JSplitPane textSplitPane= new JSplitPane(1,documentScroll,resultsScroll);
+		textSplitPane.setDividerLocation(120);		
 
 		//Splits buttonPanel and textSplitPanel vertically, locks the divider in place
 		JSplitPane verticalPane= new JSplitPane(0,buttonPanel,textSplitPane);
@@ -242,6 +250,7 @@ public class GUI {
 	}
 
 
+	
 	public JTextArea printResults(ArrayList<SearchResult> r){
 		
 		JTextArea resultDisplayArea = new JTextArea();
@@ -271,6 +280,7 @@ public class GUI {
 	public void addNewTab(String title, JComponent component){
 		tabViewer.addTab(title, component);
 	}
+	
 	
 	
 
