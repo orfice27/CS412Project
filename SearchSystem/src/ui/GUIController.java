@@ -2,40 +2,55 @@ package ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import model.SearchResult;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
+
+import searcher.Searcher;
+
 public class GUIController implements ActionListener{
-	
+
 	private GUI guiobject;
-	ArrayList<String> searchTerms;
-	
+	private ArrayList<SearchResult> results;
+	private ArrayList<String> searchTerms;
 	public GUIController(GUI gui){
 		guiobject = gui;
-		searchTerms = new ArrayList<String>();
+		results = new ArrayList<SearchResult>();
+		searchTerms=new ArrayList<String>();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
-			case "query":	
-				//Run context searcher on query
-				System.out.println("triggered");
-				String query = guiobject.getTxtpnSearchGui();
-				System.out.println("Query: " + query);
-				
-				
-				searchTerms.add(query); //add the term to a list so we can use again later
-				
-				
-				guiobject.setTextArea(query); //this displays query to right
-				System.out.println(searchTerms);
-				
-				guiobject.setTextPane(query); //this ADDS query to existing list on left
-				
-				
-				break;
-			case "nquery":
-				//Create a new query view
+		case "query":	
+			//Run context searcher on query
+			String query = guiobject.getTxtpnSearchGui();
+
+			Searcher searcher = new Searcher("C:\\Users\\David\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
+
+			try {
+				results = (ArrayList)searcher.search();
+			} catch (IOException | ParseException
+					| InvalidTokenOffsetsException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			searchTerms.add(query); //add the term to a list so we can use again later
+
+
+			guiobject.printResults(results); //this displays query to right
+			
+
+			guiobject.setTabsPane(results); //this ADDS document names to the eventually browsable left pane
+
+
+			break;
+		case "nquery":
+			//Create a new query view
 			break;
 		}
 	}
