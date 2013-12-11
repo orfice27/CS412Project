@@ -134,15 +134,17 @@ public class GUI {
 		
 		tabPane= new JTextPane();
 		tabPane.setEditable(false);
+		
+		//tab viewer
+				tabViewer = new JTabbedPane();
 
 		JScrollPane documentScroll = new JScrollPane(tabPane, 
 				   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-		JScrollPane resultsScroll = new JScrollPane(resultsArea, 
+		JScrollPane resultsScroll = new JScrollPane(tabViewer, 
 				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		//tab viewer
-		tabViewer = new JTabbedPane();
+		
 
 		
 
