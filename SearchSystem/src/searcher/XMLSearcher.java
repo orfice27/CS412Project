@@ -2,8 +2,12 @@ package searcher;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import model.SearchResult;
 
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
 import xmlTagSearcher.Tag.TagOptions;
 
@@ -30,14 +34,17 @@ public class XMLSearcher extends Searcher {
 		else {throw new NonXMLException("You have Entered a " +
 				"TagOption that our program doesn't handle");}
 	}
-	public void  TagSearch(){
+	public List<SearchResult>  TagSearch(){
 		try {
-			search();
+			return	search();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
 			e.printStackTrace();
+		} catch (InvalidTokenOffsetsException e) {
+			e.printStackTrace();
 		}
+		return null;//should never happen
 
 	}
 }
