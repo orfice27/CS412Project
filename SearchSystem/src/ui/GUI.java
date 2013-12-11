@@ -44,7 +44,7 @@ public class GUI {
 	private JTextField txtpnSearchGui;
 	JTextPane resultsPane;
 	JTextPane tabPane;
-	String newline = "\n";
+	String nL = "\n";
 
 	/**
 	 * Launch the application.
@@ -220,7 +220,7 @@ public class GUI {
 	}
 	
 	public void setTextPane(String s){
-		this.tabPane.setText(this.tabPane.getText()+s+"\n");
+		this.tabPane.setText(this.tabPane.getText()+ "<title>"+ nL  + "<filename>" + nL + "<file path>" + nL + s + " in context"+ nL);
 		
 	}
 	
