@@ -268,9 +268,22 @@ public class GUI {
 		tabViewer.addTab(title, component);
 	}
 	
+	public void insertNewTab(String title, JComponent component, int position){
+		tabViewer.insertTab(title, null, component, null, position);
+	}
+	
+	public int getTabSize (){
+		return tabViewer.getTabCount();
+	}
+	
+	public void setCurrentSelection(int position){
+		tabViewer.setSelectedIndex(position);
+	}
 	public JFrame getFrame(){
 		return frame;
 	}
+	
+	
 	
 
 }

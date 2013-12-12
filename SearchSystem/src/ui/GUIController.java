@@ -86,8 +86,13 @@ public class GUIController implements ActionListener{
 	
 			guiobject.printResults(tabList.get(tabList.size() - 1).getResults()); //this displays results to right pane
 			
+			if(guiobject.getTabSize()==0){
 			guiobject.addNewTab(query, guiobject.printResults(results));
+			} else {
 			
+			guiobject.insertNewTab(query, guiobject.printResults(results), 0);
+			guiobject.setCurrentSelection(0);
+			}
 			
 			
 			
