@@ -2,8 +2,6 @@ package searcher;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import org.apache.lucene.document.Document;
@@ -12,42 +10,34 @@ import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.TextField;
 
-public class SearcherDocuments {
+public class SearcherDocument {
 
 	public static final String FIELD_FILENAME = "filename";
 	public static final String FIELD_CONTENT  = "content";
 	public static final String FIELD_CONTENT_TV = "content_tv";
 
-	private List<File> files;
-	private List<Document> documents;
+	private File file;
+	private Document document;
 
-	public SearcherDocuments(List<File> files) {
-		this.files = files;
-		this.documents = new ArrayList<Document>();
-		this.filesToDocuments();
+	public SearcherDocument(File file) {
+		this.file = file;
+		this.document = new Document();
+		this.fileToDocument();
 	}
 
-	public List<Document> getDocuments() {
-		return this.documents;
+	public File getFile() {
+		return file;
 	}
 
-	public List<File> getFiles() {
-		return this.files;
+	public Document getDocument() {
+		return document;
 	}
 
-	private void filesToDocuments() {
-		for (File file : this.files) {
-			this.documents.add(this.fileToDocument(file));
-		}
-	}
+	private void fileToDocument() {
+		document.add(new Field(SearcherDocument.FIELD_FILENAME, file.getAbsolutePath(), StoredField.TYPE));
 
-	private Document fileToDocument(File file) {
-		Document doc = new Document();
-
-		doc.add(new Field(SearcherDocuments.FIELD_FILENAME, file.getAbsolutePath(), StoredField.TYPE));
-
-		String content = this.fileToString(file);
-		doc.add(new Field(SearcherDocuments.FIELD_CONTENT, content, TextField.TYPE_STORED));
+		String content = this.fileToString();
+		document.add(new Field(SearcherDocument.FIELD_CONTENT, content, TextField.TYPE_STORED));
 
 		FieldType type = new FieldType();
 		type.setIndexed(true);
@@ -56,12 +46,10 @@ public class SearcherDocuments {
 		type.setStoreTermVectorOffsets(true);
 		type.setStoreTermVectorPayloads(true);
 		type.setStoreTermVectorPositions(true);
-		doc.add(new Field(SearcherDocuments.FIELD_CONTENT_TV, content, type));
-
-		return doc;
+		document.add(new Field(SearcherDocument.FIELD_CONTENT_TV, content, type));
 	}
 
-	private String fileToString(File file) {
+	private String fileToString() {
 		String content = "";
 		try {
 			content = new Scanner(new File(file.getAbsolutePath())).useDelimiter("\\Z").next();

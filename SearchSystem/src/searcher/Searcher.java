@@ -86,9 +86,9 @@ public class Searcher {
 	 */
 	private void parseDocuments(IndexWriter iwriter) throws IOException {
 		List<File> files = new XMLParser(this.root).getParsedFiles();
-		List<Document> docs = new SearcherDocuments(files).getDocuments();
-		for (Document doc : docs) {
-			iwriter.addDocument(doc);
+		for (File file : files) {
+			SearcherDocument sDoc = new SearcherDocument(file);
+			iwriter.addDocument(sDoc.getDocument());
 		}
 	}
 	/**
@@ -100,7 +100,7 @@ public class Searcher {
 	private void queryIndex() throws IOException, ParseException, InvalidTokenOffsetsException {
 		ireader = DirectoryReader.open(this.directory);
 		this.isearcher = new IndexSearcher(ireader);
-		QueryParser parser = new QueryParser(Searcher.LUCENE_VERSION, SearcherDocuments.FIELD_CONTENT, this.analyzer);
+		QueryParser parser = new QueryParser(Searcher.LUCENE_VERSION, SearcherDocument.FIELD_CONTENT, this.analyzer);
 		query = parser.parse(this.queryString);
 		this.searchResult = this.isearcher.search(query, null, 1000);
 		this.handleResults();
@@ -126,15 +126,15 @@ public class Searcher {
 			results = new ArrayList<String>();
 			int id = hits[i].doc;
 			Document doc = isearcher.doc(id);
-			String text = doc.get(SearcherDocuments.FIELD_CONTENT);
-			TokenStream tokenStream = TokenSources.getAnyTokenStream(isearcher.getIndexReader(), id, SearcherDocuments.FIELD_CONTENT, analyzer);
+			String text = doc.get(SearcherDocument.FIELD_CONTENT);
+			TokenStream tokenStream = TokenSources.getAnyTokenStream(isearcher.getIndexReader(), id, SearcherDocument.FIELD_CONTENT, analyzer);
 			TextFragment[] frag = highlighter.getBestTextFragments(tokenStream, text, false, 10);
 			for (int j = 0; j < frag.length; j++) {
 				if ((frag[j] != null) && (frag[j].getScore() > 0)) {
 					results.add((frag[j].toString()));
 				}
 			}
-			result = new SearchResult(i + 1, doc.get(SearcherDocuments.FIELD_FILENAME), results);
+			result = new SearchResult(i + 1, doc.get(SearcherDocument.FIELD_FILENAME), results);
 			this.searchResults.add(result);
 		}
 	}
