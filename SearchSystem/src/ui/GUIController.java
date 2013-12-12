@@ -43,6 +43,8 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	private ArrayList<String> fileContentsToDisplay;
 	private int existencechecker;
 	
+	private String username;
+	
 	public GUIController(GUI gui){
 		guiobject = gui;
 		results = new ArrayList<SearchResult>();
@@ -53,6 +55,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		newline = "\n";
 		fileContentsToDisplay = new ArrayList<String>();
 		existencechecker = 0;
+		username = "SeeMai";
 	}
 
 	@Override
@@ -87,7 +90,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			//you need to change to the name here to work, so it points to your local dataset folder
 			
-			Searcher searcher = new Searcher("C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
+			Searcher searcher = new Searcher("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
 
 			try {
 				results = (ArrayList)searcher.search();
@@ -204,30 +207,18 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		
 		case "quran.xml.txt":
 			
-			//clear our original list of lines
-			fileContentsToDisplay.clear();
+			int checker =0;
 			
 			//do stuff
 			
 			System.out.println("Open Quran");
 			
-			//check if we already had quran opened - no point reopening
-			for (int i=0; i<tabList.size();i++){
-				if(tabList.get(i).getTitle().equals("quran.xml.txt")){
-					existencechecker=1;
-					System.out.println("ALREADY EXISTS");
-					
-			} else {
-				System.out.println("DOES NOT EXIST YET");
-			}
-			}
+			//check if we already had file opened - no point reopening
+			checker = checkForFile("quran.xml.txt");
 			
-			if(existencechecker == 1){
-				//just select that tab
-				System.out.println("existence: " + existencechecker);
-				int pnumber = guiobject.returnIndexOfTabWithTitle("quran.xml.txt");
-				System.out.println("Tab no: " + pnumber);
-				guiobject.setCurrentSelection(pnumber);
+			if(checker == 1){
+				//if so then just select tab
+				openTabWithName("quran.xml.txt");
 				
 			} else {
 			
@@ -237,78 +228,115 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			//now we read contents of file into a new jtextpane
 			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
 			//you still need to change the name to load it though
-			File filetoread = new File("C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\quran.xml.txt");
+			File filetoread = new File("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\quran.xml.txt");
 			
 		    
-			        if ( filetoread.canRead() )                                     
-			          {
-			             try
-			             {
-			                // Read the contents of the file into a byte[]
-			              // object.
-			                FileInputStream input_file =
-			                  new FileInputStream(filetoread);
-			                byte[] file_data = new byte[(int) filetoread.length()];
-			                input_file.read(file_data);                         
-			  
-			                // Create a text area to hold the contents of the
-			                // file.
-			                JTextArea text_area = new JTextArea();              
-			                text_area.setEditable(false);
-			                text_area.insert(new String(file_data), 0);
-			    
-			                // Create a scroll pane to hold the text area; add
-			                // it to the tabbed pane with all the other
-			                // previously loaded scroll panes; and make the new
-			              // scroll pane the selected component.
-			                JScrollPane text_comp = new JScrollPane(text_area); 
-			                guiobject.returnTabViewer().add(text_comp, filetoread.getName());
-			                guiobject.returnTabViewer().setSelectedComponent(text_comp);
-			    
-			         
-			             }
-			             catch (java.io.FileNotFoundException ex)
-			           {
-			                JOptionPane.showMessageDialog(
-			                   null,
-			                   "Cannot find '" + filetoread.getAbsolutePath() + "'",
-			                   "Read Error", JOptionPane.ERROR_MESSAGE
-			              );
-			             }
-			             catch (java.io.IOException ex)
-			             {
-			                JOptionPane.showMessageDialog(
-			                 null,
-			                   "Error reading from '" + filetoread.getAbsolutePath() +
-			                      "':" + ex.getMessage(),
-			                   "Read Error", JOptionPane.ERROR_MESSAGE
-			                );
-			           }
-			          }
-			          else
-			          {
-			             JOptionPane.showMessageDialog(
-			              null,
-			                "Cannot read from file '" +
-			                   filetoread.getAbsolutePath() + "'",
-			                "Read Error", JOptionPane.ERROR_MESSAGE
-			             );
-			        }
-			       
-			}
+			readAFile(filetoread);      
 			    
 			
-			    
+			}  
 			
 			break;
 			
 		case "nt.xml.txt":
-			//do other stuff
+			
 			
 			System.out.println("Open New Testament");
 			
+			int checkerNT =0;
+			
+			//check if we already had file opened - no point reopening
+			checkerNT = checkForFile("nt.xml.txt");
+			
+			if(checkerNT == 1){
+				//if so then just select tab
+				openTabWithName("nt.xml.txt");
+				
+			} else {
+			
+			//add this tab to our tablist
+			tabList.add(new Tab(tabCounter, name, name));
+			
+			//now we read contents of file into a new jtextpane
+			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
+			//you still need to change the name to load it though
+			File filetoread = new File("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\nt.xml.txt");
+			
+		    
+			readAFile(filetoread);      
+			    
+			
+			} 
+			
 			break;
+			
+			case "ot.xml.txt":
+			
+			
+			System.out.println("Open Old Testament");
+			
+			int checkerOT =0;
+			
+			//check if we already had file opened - no point reopening
+			checkerNT = checkForFile("ot.xml.txt");
+			
+			if(checkerNT == 1){
+				//if so then just select tab
+				openTabWithName("ot.xml.txt");
+				
+			} else {
+			
+			//add this tab to our tablist
+			tabList.add(new Tab(tabCounter, name, name));
+			
+			//now we read contents of file into a new jtextpane
+			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
+			//you still need to change the name to load it though
+			File filetoread = new File("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\ot.xml.txt");
+			
+		    
+			readAFile(filetoread);      
+			    
+			
+			} 
+			
+			break;
+			
+			case "bom.xml.txt":
+				
+				
+				System.out.println("Open New Testament");
+				
+				int checkerBOM =0;
+				
+				//check if we already had file opened - no point reopening
+				checkerBOM = checkForFile("bom.xml.txt");
+				
+				if(checkerBOM == 1){
+					//if so then just select tab
+					openTabWithName("bom.xml.txt");
+					
+				} else {
+				
+				//add this tab to our tablist
+				tabList.add(new Tab(tabCounter, name, name));
+				
+				//now we read contents of file into a new jtextpane
+				//for testing purposes the file is too large to be read so I have included a snippet of the original in place
+				//you still need to change the name to load it though
+				
+				File filetoread = new File("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\bom.xml.txt");
+				
+			    
+				readAFile(filetoread);      
+				    
+				
+				} 
+				
+				break;
 		}
+		
+		
  
         } 
 		
@@ -337,5 +365,90 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private void readAFile(File filetoread){
+		 if ( filetoread.canRead() )                                     
+         {
+            try
+            {
+               // Read the contents of the file into a byte[]
+             // object.
+               FileInputStream input_file =
+                 new FileInputStream(filetoread);
+               byte[] file_data = new byte[(int) filetoread.length()];
+               input_file.read(file_data);                         
+ 
+               // Create a text area to hold the contents of the
+               // file.
+               JTextArea text_area = new JTextArea();              
+               text_area.setEditable(false);
+               text_area.insert(new String(file_data), 0);
+   
+               // Create a scroll pane to hold the text area; add
+               // it to the tabbed pane with all the other
+               // previously loaded scroll panes; and make the new
+             // scroll pane the selected component.
+               JScrollPane text_comp = new JScrollPane(text_area); 
+               guiobject.returnTabViewer().add(text_comp, filetoread.getName());
+               guiobject.returnTabViewer().setSelectedComponent(text_comp);
+   
+        
+            }
+            catch (java.io.FileNotFoundException ex)
+          {
+               JOptionPane.showMessageDialog(
+                  null,
+                  "Cannot find '" + filetoread.getAbsolutePath() + "'",
+                  "Read Error", JOptionPane.ERROR_MESSAGE
+             );
+            }
+            catch (java.io.IOException ex)
+            {
+               JOptionPane.showMessageDialog(
+                null,
+                  "Error reading from '" + filetoread.getAbsolutePath() +
+                     "':" + ex.getMessage(),
+                  "Read Error", JOptionPane.ERROR_MESSAGE
+               );
+          }
+         }
+         else
+         {
+            JOptionPane.showMessageDialog(
+             null,
+               "Cannot read from file '" +
+                  filetoread.getAbsolutePath() + "'",
+               "Read Error", JOptionPane.ERROR_MESSAGE
+            );
+       }
+      
+	}
+	
+	private int checkForFile(String filename){
+		
+		existencechecker=0;
+		
+		for (int i=0; i<tabList.size();i++){
+			if(tabList.get(i).getTitle().equals(filename)){
+				existencechecker=1;
+				System.out.println("ALREADY EXISTS");
+				
+		} else {
+			System.out.println("DOES NOT EXIST YET");
+		}
+		}
+		
+		return existencechecker;
+	}
+	
+	private void openTabWithName(String name){
+	
+	
+		System.out.println("existence: " + existencechecker);
+		int pnumber = guiobject.returnIndexOfTabWithTitle(name);
+		System.out.println("Tab no: " + pnumber);
+		guiobject.setCurrentSelection(pnumber);
+	}
+	
 
 }
