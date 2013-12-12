@@ -211,22 +211,25 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			System.out.println("Open Quran");
 			
-//			//check if we already had quran opened - no point reopening
-//			for (int i=0; i<tabList.size();i++){
-//				if(tabList.get(i).getTitle().equals("quran.xml.txt")){
-//					existencechecker=1;
-//					
-//			}
-//			}
-//			
-//			if(existencechecker == 0){
-//				//just select that tab
-//				System.out.println("existence: " + existencechecker);
-//				int pnumber = guiobject.returnIndexOfTabWithTitle("quran.xml.txt");
-//				System.out.println("Tab no: " + pnumber);
-//				guiobject.setCurrentSelection(pnumber);
-//				existencechecker = 1;
-//			} else {
+			//check if we already had quran opened - no point reopening
+			for (int i=0; i<tabList.size();i++){
+				if(tabList.get(i).getTitle().equals("quran.xml.txt")){
+					existencechecker=1;
+					System.out.println("ALREADY EXISTS");
+					
+			} else {
+				System.out.println("DOES NOT EXIST YET");
+			}
+			}
+			
+			if(existencechecker == 1){
+				//just select that tab
+				System.out.println("existence: " + existencechecker);
+				int pnumber = guiobject.returnIndexOfTabWithTitle("quran.xml.txt");
+				System.out.println("Tab no: " + pnumber);
+				guiobject.setCurrentSelection(pnumber);
+				
+			} else {
 			
 			//add this tab to our tablist
 			tabList.add(new Tab(tabCounter, name, name));
@@ -292,7 +295,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			             );
 			        }
 			       
-			
+			}
 			    
 			
 			    
