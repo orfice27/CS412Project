@@ -3,12 +3,17 @@ package ui;
 
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import model.SearchResult;
-
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -30,8 +35,9 @@ import javax.swing.text.JTextComponent;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
-import wordAutocomplete.AutoCompleteDocument;
-import wordAutocomplete.CompletionService;
+
+import wordAutocomplete.AutoCompleteTextField;
+
 
 /**
  * A {@link Document} performing auto completion on the inserted text. This
@@ -52,10 +58,11 @@ public class GUI {
 
 	private JFrame frame;
 	private GUIController controller;
-	private JTextField txtpnSearchGui;
+	private AutoCompleteTextField txtpnSearchGui;
 	private	JTextArea resultsArea;
 	private JTextPane tabPane;
 	private JTabbedPane tabViewer;
+	ArrayList<String> words;
 
 	/**
 	 * Launch the application.
@@ -77,8 +84,51 @@ public class GUI {
 	 * Create the application.
 	 */
 	public GUI() {
+		readAndPopulateDictionary();
 		initialize();
+		
 	}
+	
+	private void readAndPopulateDictionary(){
+		
+		String filePath = "C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\theologicaldictionary.txt.txt";
+		File mainFile = new File(filePath);
+		words = new ArrayList<String>();
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(mainFile));
+			String line;		
+			while((line=br.readLine()) != null){
+				StringTokenizer st = new StringTokenizer(line);
+
+				//for every token
+				while (st.hasMoreTokens()) {
+				//we extract the word
+				String word = st.nextToken();
+				
+				
+				words.add(word);
+					
+			
+				
+				} 
+				}
+			br.close(); 
+		}
+				catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		//Reads the XML file
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	
+			words.addAll(Arrays.asList("Quran", "Old Testament", "New Testament", "Testament",
+					"Mormon", "The Book Of Mormon"));
+		}
+		
 
 
 
@@ -114,8 +164,13 @@ public class GUI {
 
 
 		//Text field for query, triggers a search when enter is pressed
-		txtpnSearchGui = new JTextField(40);
-		txtpnSearchGui.setText("Search GUI");
+		txtpnSearchGui = new AutoCompleteTextField(60);
+		
+		for(String s: words){
+			txtpnSearchGui.addPossibility(s);
+			System.out.println(s);
+		}
+		//txtpnSearchGui.setText("Search GUI");
 		txtpnSearchGui.addActionListener(controller);
 		txtpnSearchGui.setActionCommand("query");
 		buttonPanel.add(txtpnSearchGui);		
@@ -174,81 +229,9 @@ public class GUI {
 
 		JMenuItem mntmMenuitem_1 = new JMenuItem("MenuItem2");
 		mnMenu_1.add(mntmMenuitem_1);
-
-		/*
-		 * this onwards is the word autocompletion code
-		 */
-
-		// Create the completion service.
-		SearchService nameService = new SearchService();
-
-
-		JTextField input = this.txtpnSearchGui;
-
-		// Create the auto completing document model with a reference to the
-		// service and the input field.
-		Document autoCompleteDocument = new AutoCompleteDocument(nameService,
-				input);
-
-		// Set the auto completing document as the document model on our input
-		// field.
-		input.setDocument(autoCompleteDocument);
-
-
 	}
-	private static class SearchService implements CompletionService<String> {
 
-		/** Our search data. */
-		private List<String> data;
 		
-
-		/**
-		 * Create a new <code>SearchService</code> and populate it.
-		 * 
-		 */
-
-		/*This is pretty much the "dictionary". You can add as many
-		 * as you want but I reckon the popular terms for religious 
-		 * texts is enough for our project - SeeMai
-		 * Also, it's case sensitive.
-		 * */
-		public SearchService() {
-			
-			data = Arrays.asList("Quran", "Old Testament", "New Testament", "Testament",
-					"Mormon", "The Book Of Mormon");
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public String toString() {
-			StringBuilder b = new StringBuilder();
-			for (String o : data) {
-				b.append(o).append("\n");
-			}
-			return b.toString();
-		}
-
-		/** {@inheritDoc} */
-		public String autoComplete(String startsWith) {
-			// Naive implementation, but good enough for the sample
-			String hit = null;
-			for (String o : data) {
-				if (o.startsWith(startsWith)) {
-					// CompletionService contract states that we only
-					// should return completion for unique hits.
-					if (hit == null) {
-						hit = o;
-					} else {
-						hit = null;
-						break;
-					}
-				}
-			}
-			return hit;
-		}
-
-	}
-
 	public String getTxtpnSearchGui() {
 		return txtpnSearchGui.getText();
 	}
