@@ -21,6 +21,9 @@ public class GUIController implements ActionListener{
 	private GUI guiobject;
 	private ArrayList<SearchResult> results;
 	private ArrayList<String> searchTerms;
+	private int tabNumber;
+	private String title;
+	private ArrayList<Tab> tabList;
 	public GUIController(GUI gui){
 		guiobject = gui;
 		results = new ArrayList<SearchResult>();
@@ -57,7 +60,7 @@ public class GUIController implements ActionListener{
 			String query = guiobject.getTxtpnSearchGui();
 			
 			//you need to change to the name here to work, so it points to your local dataset folder
-			Searcher searcher = new Searcher("C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
+			Searcher searcher = new Searcher("/Users/andrewconway/git/CS412 Project/SearchSystem/data set",query);
 
 			try {
 				results = (ArrayList)searcher.search();
@@ -66,12 +69,18 @@ public class GUIController implements ActionListener{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
+			tabList = new ArrayList<Tab>();
 			searchTerms.add(query); //add the term to a list so we can use again later
-			guiobject.printResults(results); //this displays results to right pane
-
-			guiobject.addNewTab(query, guiobject.printResults(results)); //this adds a new tab for each query 
-			guiobject.setTabsPane(results); //this ADDS document names to the eventually browsable left pane
+			tabList.add(new Tab(tabList.size(), results, query));
+	
+			guiobject.printResults(tabList.get(tabList.size() - 1).getResults()); //this displays results to right pane
+			
+			guiobject.addNewTab(query, guiobject.printResults(results));
+			
+			
+			//this adds a new tab for each query 
+			guiobject.setTabsPane(results);
+			//this ADDS document names to the eventually browsable left pane
 			
 			break;
 			}
