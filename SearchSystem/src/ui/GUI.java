@@ -168,7 +168,7 @@ public class GUI {
 		
 		for(String s: words){
 			txtpnSearchGui.addPossibility(s);
-			System.out.println(s);
+			//System.out.println(s);
 		}
 		//txtpnSearchGui.setText("Search GUI");
 		txtpnSearchGui.addActionListener(controller);

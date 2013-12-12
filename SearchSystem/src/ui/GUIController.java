@@ -60,7 +60,8 @@ public class GUIController implements ActionListener{
 			String query = guiobject.getTxtpnSearchGui();
 			
 			//you need to change to the name here to work, so it points to your local dataset folder
-			Searcher searcher = new Searcher("/Users/andrewconway/git/CS412 Project/SearchSystem/data set",query);
+			
+			Searcher searcher = new Searcher("C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
 
 			try {
 				results = (ArrayList)searcher.search();
@@ -71,6 +72,16 @@ public class GUIController implements ActionListener{
 			}
 			tabList = new ArrayList<Tab>();
 			searchTerms.add(query); //add the term to a list so we can use again later
+			if(results.isEmpty()){
+				System.out.println("empty results");
+
+				
+				JFrame frame = guiobject.getFrame();
+				//custom title, error icon
+				JOptionPane.showMessageDialog(frame,
+					    "No results were found");
+			} else {
+			
 			tabList.add(new Tab(tabList.size(), results, query));
 	
 			guiobject.printResults(tabList.get(tabList.size() - 1).getResults()); //this displays results to right pane
@@ -78,11 +89,18 @@ public class GUIController implements ActionListener{
 			guiobject.addNewTab(query, guiobject.printResults(results));
 			
 			
+			
+			
 			//this adds a new tab for each query 
 			guiobject.setTabsPane(results);
 			//this ADDS document names to the eventually browsable left pane
 			
 			break;
+			}
+			}
+			
+			for (String s: searchTerms){
+				System.out.println(s);
 			}
 			
 		case "nquery":
