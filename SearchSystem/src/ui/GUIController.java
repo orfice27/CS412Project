@@ -43,8 +43,6 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	private ArrayList<String> fileContentsToDisplay;
 	private int existencechecker;
 	
-	private String username;
-	
 	public GUIController(GUI gui){
 		guiobject = gui;
 		results = new ArrayList<SearchResult>();
@@ -55,7 +53,6 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		newline = "\n";
 		fileContentsToDisplay = new ArrayList<String>();
 		existencechecker = 0;
-		username = "SeeMai";
 	}
 
 	@Override
@@ -90,9 +87,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			
 			
-			//you need to change to the name here to work, so it points to your local dataset folder
-			
-			Searcher searcher = new Searcher("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
+			Searcher searcher = new Searcher("data set" + File.separator + "rel200", query);
 
 			try {
 				results = (ArrayList)searcher.search();
@@ -232,7 +227,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			//now we read contents of file into a new jtextpane
 			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
 			//you still need to change the name to load it though
-			File filetoread = new File("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\quran.xml.txt");
+			File filetoread = new File("quran.xml.txt");
 			
 		    
 			readAFile(filetoread);      
@@ -263,8 +258,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			//now we read contents of file into a new jtextpane
 			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
-			//you still need to change the name to load it though
-			File filetoread = new File("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\nt.xml.txt");
+			File filetoread = new File("nt.xml.txt");
 			
 		    
 			readAFile(filetoread);      
@@ -295,8 +289,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			//now we read contents of file into a new jtextpane
 			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
-			//you still need to change the name to load it though
-			File filetoread = new File("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\ot.xml.txt");
+			File filetoread = new File("ot.xml.txt");
 			
 		    
 			readAFile(filetoread);      
@@ -327,9 +320,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 				
 				//now we read contents of file into a new jtextpane
 				//for testing purposes the file is too large to be read so I have included a snippet of the original in place
-				//you still need to change the name to load it though
-				
-				File filetoread = new File("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\bom.xml.txt");
+				File filetoread = new File("bom.xml.txt");
 				
 			    
 				readAFile(filetoread);      

@@ -111,8 +111,7 @@ public class GUI {
 	
 	private void readAndPopulateDictionary(){
 		
-		String filePath = "C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\theologicaldictionary.txt.txt";
-		File mainFile = new File(filePath);
+		File mainFile = new File("theologicaldictionary.txt.txt");
 		words = new ArrayList<String>();
 		
 		try {
