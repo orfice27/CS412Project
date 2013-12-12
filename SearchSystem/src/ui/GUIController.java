@@ -88,6 +88,8 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			String query = guiobject.getTxtpnSearchGui();
 			
+			
+			
 			//you need to change to the name here to work, so it points to your local dataset folder
 			
 			Searcher searcher = new Searcher("C:\\Users\\" + username + "\\git\\CS412Project\\SearchSystem\\data set\\rel200",query);
@@ -113,10 +115,10 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			tabList.add(new Tab(tabCounter, results, query));
 	
-			guiobject.printResults(tabList.get(tabList.size() - 1).getResults()); //this displays results to right pane
+			guiobject.printResults(tabList.get(tabList.size() - 1).getResults(),query); //this displays results to right pane
 			
 	
-			guiobject.insertNewTab(query, guiobject.printResults(results),0);
+			guiobject.insertNewTab(query, guiobject.printResults(results, query),0);
 			 
 			guiobject.setCurrentSelection(0);
 			}
@@ -191,6 +193,8 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		System.out.println("Tab index selected: " + index);
 		
 		guiobject.setTabsPaneWithStrings(documents);
+		JTextArea area = guiobject.resultDisplayArea;
+		guiobject.rehighlightarea(area,title);
 		}
 		
 	}
@@ -278,9 +282,9 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			int checkerOT =0;
 			
 			//check if we already had file opened - no point reopening
-			checkerNT = checkForFile("ot.xml.txt");
+			checkerOT = checkForFile("ot.xml.txt");
 			
-			if(checkerNT == 1){
+			if(checkerOT == 1){
 				//if so then just select tab
 				openTabWithName("ot.xml.txt");
 				
@@ -305,7 +309,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			case "bom.xml.txt":
 				
 				
-				System.out.println("Open New Testament");
+				System.out.println("Open BOOK OF MORMON");
 				
 				int checkerBOM =0;
 				

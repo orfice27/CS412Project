@@ -1,6 +1,7 @@
 package ui;
 
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -33,8 +34,14 @@ import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
+import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import javax.swing.text.Utilities;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
@@ -66,6 +73,16 @@ public class GUI {
 	private JTextPane tabPane;
 	private JTabbedPane tabViewer;
 	ArrayList<String> words;
+	Style cwStyle;
+	JTextArea resultDisplayArea;
+	
+	StyleContext sc = new StyleContext();
+    final DefaultStyledDocument doc = new DefaultStyledDocument(sc);
+    
+    // An instance of the subclass of the default highlight painter
+   MyHighlightPainter myHighlightPainter = new MyHighlightPainter(Color.yellow);
+    
+    
 
 	/**
 	 * Launch the application.
@@ -190,6 +207,8 @@ public class GUI {
 		resultsArea = new JTextArea(); //2
 		resultsArea.setEditable(false);	
 		
+		
+		
 		tabPane= new JTextPane();
 		tabPane.setEditable(false);
 		tabPane.addMouseListener(controller);
@@ -206,6 +225,12 @@ public class GUI {
 		
 		tabViewer.addChangeListener(controller);
 		
+		//for highlighting later
+	
+	    // Create and add the constant width style
+	    cwStyle = sc.addStyle("ConstantWidth", null);
+	    StyleConstants.setFontFamily(cwStyle, "monospaced");
+	    StyleConstants.setForeground(cwStyle, Color.YELLOW);
 
 		//Splits tabPane and results pane
 		JSplitPane textSplitPane= new JSplitPane(1,documentScroll,resultsScroll);
@@ -242,21 +267,82 @@ public class GUI {
 
 
 	
-	public JTextArea printResults(ArrayList<SearchResult> r){
+	public JTextArea printResults(ArrayList<SearchResult> r, String queryterm){
 		
-		JTextArea resultDisplayArea = new JTextArea();
+		//we need to locate all the HIGHLIGHT terms and change them to yellow
+		//doc.setCharacterAttributes(49, 13, cwStyle, false);
+		
+		
+		resultDisplayArea = new JTextArea();
 		resultDisplayArea.setText("");
 		//resultsPane.setText("");
 		for(SearchResult s: r){
 			resultDisplayArea.append("Results Found in "+s.getFileName()+" at "+s.getFilePath());
 			resultDisplayArea.append("\n-----------------------------------------------------\n\n");
 			for(String str : s.getResults()){
+				
+//				//we gotta check to see if the string has any HIGHLIGHT tags
+//				if(str.contains("Quran")){
+//				int startindex = str.indexOf('Q');
+//				int endindex = str.indexOf('n');
+//				doc.setCharacterAttributes(startindex, endindex, cwStyle, false);
+//				
+				
+					//we need to extract where the term to be highlighted starts and ends
+//				outerloop:
+//					for(int i=0; i<str.length(); i++){
+//						if(str.charAt(i) == '>'){ //<highlight>Quran</highlight>
+//							startindex = i+1;
+//							for (int j=0; j<str.length(); j++){
+//								if(str.charAt(j) == '/'){
+//									endindex = j-1;
+//									ns = str.substring(startindex, endindex);
+//									System.out.println("New strings: " + ns);
+//									doc.setCharacterAttributes(startindex, endindex, cwStyle, false);
+//									break outerloop;
+//								}
+//								
+//							}
+//						}
+//					}
+				
 				resultDisplayArea.append(str+"\n");
+				highlight(resultDisplayArea, queryterm);
 			}
 			
 		}
 		return resultDisplayArea;
 	}
+	
+	public JTextArea returnDisplay(){
+		return resultDisplayArea;
+	}
+	
+	public void rehighlightarea(JTextComponent comp, String term){
+		highlight(comp, term);
+	}
+	
+	// Creates highlights around all occurrences of pattern in textComp
+	public void highlight(JTextComponent textComp, String pattern) {
+	  
+
+	try {
+	    Highlighter hilite = textComp.getHighlighter();
+	    Document doc = textComp.getDocument();
+	    String text = doc.getText(0, doc.getLength());
+	    int pos = 0;
+
+	    // Search for pattern
+	    // see I have updated now its not case sensitive 
+	    while ((pos = text.toUpperCase().indexOf(pattern.toUpperCase(), pos)) >= 0) {
+	        // Create highlighter using private painter and apply around pattern
+	        hilite.addHighlight(pos, pos+pattern.length(), myHighlightPainter);
+	        pos += pattern.length();
+	    }
+	} catch (BadLocationException e) {
+	}
+	}
+	
 	/**
 	 * Sets the text of the left text pane, the tab pane
 	 * @param s Search Result to be added to the pane.
@@ -331,6 +417,13 @@ public class GUI {
 	
 	public JTabbedPane returnTabViewer(){
 		return tabViewer;
+	}
+	
+	// A private subclass of the default highlight painter
+	class MyHighlightPainter extends DefaultHighlighter.DefaultHighlightPainter {
+	    public MyHighlightPainter(Color color) {
+	        super(color);
+	    }
 	}
 	
 
