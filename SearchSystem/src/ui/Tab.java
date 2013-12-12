@@ -9,6 +9,7 @@ public class Tab {
 	private ArrayList<SearchResult> results;
 	private String title;
 	private ArrayList<String> documentNameList;
+	private String filename;
 	
 	
 	public Tab(int tabLocation, ArrayList<SearchResult> results, String title){
@@ -19,6 +20,12 @@ public class Tab {
 		for(SearchResult poof : results){
 			documentNameList.add(poof.getFileName());
 		}
+	}
+	
+	public Tab(int tabLocation, String filename, String title){
+		this.tabLocation = tabLocation;
+		this.filename = filename;
+		this.title = title;
 	}
 	
 	public int getTabLocation(){
@@ -36,6 +43,10 @@ public class Tab {
 	public ArrayList<String> getDocumentName(){
 		return documentNameList;
 		
+	}
+	
+	public String getFilename(){
+		return filename;
 	}
 	
 	

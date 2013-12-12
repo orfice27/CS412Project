@@ -5,12 +5,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -32,7 +39,8 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	private String title;
 	private ArrayList<Tab> tabList;
 	private ArrayList<String> documents;
-	
+	private String newline;
+	private ArrayList<String> fileContentsToDisplay;
 	
 	public GUIController(GUI gui){
 		guiobject = gui;
@@ -41,6 +49,8 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		tabCounter = 0;
 		tabList = new ArrayList<Tab>();
 		documents = new ArrayList<String>();
+		newline = "\n";
+		fileContentsToDisplay = new ArrayList<String>();
 	}
 
 	@Override
@@ -159,6 +169,11 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		//get the title of the current tab selected
 		String title = guiobject.getCurrentTabTitle();
 		
+		//if its an opened document, just make the section blank
+		if(title.contains("txt")){
+			guiobject.setTabsPaneWithTitle(title);
+		} else {
+		
 		//now we look through list of tabs
 		for (int i=0; i<tabList.size(); i++){
 			Tab tabtocheck = tabList.get(i);
@@ -171,6 +186,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		System.out.println("Tab index selected: " + index);
 		
 		guiobject.setTabsPaneWithStrings(documents);
+		}
 		
 	}
 
@@ -181,6 +197,96 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		String name = guiobject.returnDocumentClicked(p);
 		System.out.println("name: " + name);
 		
+		//check string name against filenames and open relevant document
+		switch(name){
+		
+		case "quran.xml.txt":
+			
+			//clear our original list of lines
+			fileContentsToDisplay.clear();
+			
+			//do stuff
+			
+			System.out.println("Open Quran");
+			
+			//add this tab to our tablist
+			tabList.add(new Tab(tabCounter, name, name));
+			
+			//now we read contents of file into a new jtextpane
+			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
+			//you still need to change the name to load it though
+			File filetoread = new File("C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\data set\\quran.xml.txt");
+			
+		    
+			        if ( filetoread.canRead() )                                     
+			          {
+			             try
+			             {
+			                // Read the contents of the file into a byte[]
+			              // object.
+			                FileInputStream input_file =
+			                  new FileInputStream(filetoread);
+			                byte[] file_data = new byte[(int) filetoread.length()];
+			                input_file.read(file_data);                         
+			  
+			                // Create a text area to hold the contents of the
+			                // file.
+			                JTextArea text_area = new JTextArea();              
+			                text_area.setEditable(false);
+			                text_area.insert(new String(file_data), 0);
+			    
+			                // Create a scroll pane to hold the text area; add
+			                // it to the tabbed pane with all the other
+			                // previously loaded scroll panes; and make the new
+			              // scroll pane the selected component.
+			                JScrollPane text_comp = new JScrollPane(text_area); 
+			                guiobject.returnTabViewer().add(text_comp, filetoread.getName());
+			                guiobject.returnTabViewer().setSelectedComponent(text_comp);
+			    
+			         
+			             }
+			             catch (java.io.FileNotFoundException ex)
+			           {
+			                JOptionPane.showMessageDialog(
+			                   null,
+			                   "Cannot find '" + filetoread.getAbsolutePath() + "'",
+			                   "Read Error", JOptionPane.ERROR_MESSAGE
+			              );
+			             }
+			             catch (java.io.IOException ex)
+			             {
+			                JOptionPane.showMessageDialog(
+			                 null,
+			                   "Error reading from '" + filetoread.getAbsolutePath() +
+			                      "':" + ex.getMessage(),
+			                   "Read Error", JOptionPane.ERROR_MESSAGE
+			                );
+			           }
+			          }
+			          else
+			          {
+			             JOptionPane.showMessageDialog(
+			              null,
+			                "Cannot read from file '" +
+			                   filetoread.getAbsolutePath() + "'",
+			                "Read Error", JOptionPane.ERROR_MESSAGE
+			             );
+			        }
+			       
+	
+			    
+	
+			    
+			
+			break;
+			
+		case "nt.xml.txt":
+			//do other stuff
+			
+			System.out.println("Open New Testament");
+			
+			break;
+		}
  
         } 
 		

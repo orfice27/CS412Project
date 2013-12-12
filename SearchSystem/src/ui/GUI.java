@@ -275,6 +275,10 @@ public class GUI {
 		}
 	}
 	
+	public void setTabsPaneWithTitle(String s){
+		tabPane.setText(s);
+	}
+	
 	public void addNewTab(String title, JComponent component){
 		tabViewer.addTab(title, component);
 	}
@@ -319,6 +323,9 @@ public class GUI {
 		return text;
 	}
 	
+	public JTabbedPane returnTabViewer(){
+		return tabViewer;
+	}
 	
 
 }

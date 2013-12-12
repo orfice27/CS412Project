@@ -1,0 +1,21 @@
+
+ 
+ The Quran
+
+ One of a group of four religious works marked up for
+ electronic publication from publicly available sources
+ 
+ SGML version by Jon Bosak, 1992-1994
+ XML version by Jon Bosak, 1996-1998
+ The XML markup and added material in this version are
+ Copyright &#169; 1998 Jon Bosak
+ 
+
+ 
+ The set of which this work is a part may freely be distributed on
+ condition that it not be modified or altered in any way. The
+ individual works making up the set &#8212; The Old Testament, The
+ New Testament, The Quran, and The Book of Mormon &#8212;
+ cannot be distributed separately without violating the terms under
+ which the set is made available.
+ 
