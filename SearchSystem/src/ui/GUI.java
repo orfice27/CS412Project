@@ -4,6 +4,7 @@ package ui;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,8 +32,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.Utilities;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
@@ -189,6 +192,7 @@ public class GUI {
 		
 		tabPane= new JTextPane();
 		tabPane.setEditable(false);
+		tabPane.addMouseListener(controller);
 		
 		//tab viewer
 				tabViewer = new JTabbedPane();
@@ -296,7 +300,24 @@ public class GUI {
 		return frame;
 	}
 	
-	
+	public String returnDocumentClicked(Point e){
+		int offset = tabPane.viewToModel(e);
+		String text=null;
+		try {
+			int start = Utilities.getWordStart(tabPane, offset);
+			int end = Utilities.getWordEnd(tabPane, offset);
+			System.out.println("offset: "+ offset);
+			System.out.println("start: " + start + " end: " + end);
+			text = tabPane.getText(start, end-start);
+			System.out.println("Text extracted: " + text);
+			
+		} catch (BadLocationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		//tabPane.setCaretPosition(tabPane.viewToModel(e)); 
+		return text;
+	}
 	
 	
 

@@ -1,7 +1,10 @@
 package ui;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -18,7 +21,7 @@ import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
 import searcher.Searcher;
 
-public class GUIController implements ActionListener, ChangeListener{
+public class GUIController implements ActionListener, ChangeListener, MouseListener{
 
 	private int tabCounter;
 	private int index;
@@ -168,6 +171,42 @@ public class GUIController implements ActionListener, ChangeListener{
 		System.out.println("Tab index selected: " + index);
 		
 		guiobject.setTabsPaneWithStrings(documents);
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		System.out.println("mouse clicked");
+		Point p = new Point(e.getX(), e.getY());
+		String name = guiobject.returnDocumentClicked(p);
+		System.out.println("name: " + name);
+		
+ 
+        } 
+		
+	
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
 		
 	}
 
