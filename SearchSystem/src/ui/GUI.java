@@ -1,6 +1,7 @@
 package ui;
 
 
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.io.BufferedReader;
@@ -34,7 +35,6 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
-
 
 import wordAutocomplete.AutoCompleteTextField;
 
@@ -200,7 +200,7 @@ public class GUI {
 				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		
-
+		tabViewer.addChangeListener(controller);
 		
 
 		//Splits tabPane and results pane
@@ -264,6 +264,13 @@ public class GUI {
 		}
 	}
 	
+	public void setTabsPaneWithStrings(ArrayList<String> s){
+		tabPane.setText("");
+		for (String str : s){
+			tabPane.setText(tabPane.getText() + str + "\n");
+		}
+	}
+	
 	public void addNewTab(String title, JComponent component){
 		tabViewer.addTab(title, component);
 	}
@@ -279,9 +286,16 @@ public class GUI {
 	public void setCurrentSelection(int position){
 		tabViewer.setSelectedIndex(position);
 	}
+	
+	public String getCurrentTabTitle(){
+		int selection = tabViewer.getSelectedIndex();
+		String s = tabViewer.getTitleAt(selection);
+		return s;
+	}
 	public JFrame getFrame(){
 		return frame;
 	}
+	
 	
 	
 	
