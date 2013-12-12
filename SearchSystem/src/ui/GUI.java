@@ -75,6 +75,7 @@ public class GUI {
 	ArrayList<String> words;
 	Style cwStyle;
 	JTextArea resultDisplayArea;
+	String highlighterm;
 	
 	StyleContext sc = new StyleContext();
     final DefaultStyledDocument doc = new DefaultStyledDocument(sc);
@@ -266,7 +267,7 @@ public class GUI {
 
 
 	
-	public JTextArea printResults(ArrayList<SearchResult> r, String queryterm){
+public JTextArea printResults(ArrayList<SearchResult> r, String queryterm){
 		
 		//we need to locate all the HIGHLIGHT terms and change them to yellow
 		//doc.setCharacterAttributes(49, 13, cwStyle, false);
@@ -305,10 +306,12 @@ public class GUI {
 //						}
 //					}
 				
-				resultDisplayArea.append(str+"\n");
+				
 				
 				//term to be highlighted
-				String highlighterm;
+				highlighterm ="";
+				String firstpart;
+				String secondpart;
 				
 				//tokenize the line
 				StringTokenizer st = new StringTokenizer(str);
@@ -321,25 +324,49 @@ public class GUI {
 				
 				//check if HIGHLIGHT exists
 				if(word.contains("highlight")){
+					
 					int startindex = word.indexOf('>');
 					int endindex = word.indexOf('/');
+					
 					//System.out.println("I'M HIGHLIGHTING: " + str);
 					startindex = startindex+1;
 					endindex = endindex-1;
-					System.out.println("Start index: " + startindex + " End Index: " + endindex);
+					//System.out.println("Start index: " + tagstart + " End Index: " + tagend);
+					
 					highlighterm = word.substring(startindex, endindex);
+					//String finalstring = firstpart + highlighterm + secondpart;
+					
 					highlight(resultDisplayArea, highlighterm);
 				}
+				}
+				
+				
+				int tagstart = str.indexOf("<highlight");
+				//System.out.println("Tag start: " + tagstart);
+				
+				//int tagend = str.indexOf('>', str.indexOf('>') + 1);
+				int tagend = str.indexOf("/highlight>");
+				//System.out.println("Tag end: " + tagend);
+				firstpart= str.substring(0,tagstart);
+				secondpart=str.substring(tagend+11,str.length());
+				String finalstring = firstpart + highlighterm +secondpart;
+			//	System.out.println("S2: " + secondpart);
+				resultDisplayArea.append(finalstring+"\n");
+			//	resultDisplayArea.append(str +"\n");
+				
+				System.out.println("String: " + str);
+				
+				//System.out.println("FINAL STRING: " + finalstring);
+//				System.out.println("FirstPart: " + firstpart);
+//				System.out.println("SecondPart: " + secondpart);
 				//find contents to highlight
 				//call highlight on contents
 			//	System.out.println(str + "\n");
 				
 			}
 			}
-			
-		}
 		return resultDisplayArea;
-	}
+		}
 	
 	public JTextArea returnDisplay(){
 		return resultDisplayArea;
