@@ -45,6 +45,7 @@ public class capitalSearcher {
 				ArrayList<String> sourcefilter=new ArrayList<String>();	
 				ArrayList<String> source=new ArrayList<String>();	
 				ArrayList<String> newest=new ArrayList<String>();	
+				ArrayList<String> test=new ArrayList<String>();
 				
 				while((line=br.readLine()) != null){
 
@@ -58,12 +59,15 @@ public class capitalSearcher {
 //						System.out.println(word);
 //					}
 					source = removeDuplicates(newest);
-					for (String word : source){
+					
+					test = removeComma(source);
+					
+					for (String word : test){
 						System.out.println(word);
 					}
 
 					StringBuilder sb = new StringBuilder(50);
-					for (String word : source){
+					for (String word : test){
 						sb.append(' ');                        
 						sb.append(word);
 					} 
@@ -223,7 +227,28 @@ private static ArrayList<String> removeStopWords(ArrayList<String> finalContents
 				usefulContents.add(s);
 			}
 		}return usefulContents;
-	} 
+	}
+
+private static ArrayList<String> removeComma(ArrayList<String> dictionaryContents){
+	
+	ArrayList<String> compiled = new ArrayList<String>();
+	
+	for (String s : dictionaryContents){
+		if(s.contains(",")){
+			int location = s.indexOf(",");
+			//System.out.println("location: " + location);
+			String newS = s.substring(0, location-1);
+		//	System.out.println("Substring: " + newS);
+			compiled.add(newS);
+		} 
+			else if (s.contains(".")){
+			int location = s.indexOf(".");
+			String newS = s.substring(0, location-1);
+			compiled.add(newS);
+			}
+		} return compiled;
+	}
+
 }
 
 

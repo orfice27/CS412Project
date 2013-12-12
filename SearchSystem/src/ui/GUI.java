@@ -200,6 +200,7 @@ public class GUI {
 
 		/** Our search data. */
 		private List<String> data;
+		
 
 		/**
 		 * Create a new <code>SearchService</code> and populate it.
@@ -212,6 +213,7 @@ public class GUI {
 		 * Also, it's case sensitive.
 		 * */
 		public SearchService() {
+			
 			data = Arrays.asList("Quran", "Old Testament", "New Testament", "Testament",
 					"Mormon", "The Book Of Mormon");
 		}
