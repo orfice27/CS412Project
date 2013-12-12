@@ -41,6 +41,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	private ArrayList<String> documents;
 	private String newline;
 	private ArrayList<String> fileContentsToDisplay;
+	private int existencechecker;
 	
 	public GUIController(GUI gui){
 		guiobject = gui;
@@ -51,6 +52,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		documents = new ArrayList<String>();
 		newline = "\n";
 		fileContentsToDisplay = new ArrayList<String>();
+		existencechecker = 0;
 	}
 
 	@Override
@@ -209,13 +211,30 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			System.out.println("Open Quran");
 			
+//			//check if we already had quran opened - no point reopening
+//			for (int i=0; i<tabList.size();i++){
+//				if(tabList.get(i).getTitle().equals("quran.xml.txt")){
+//					existencechecker=1;
+//					
+//			}
+//			}
+//			
+//			if(existencechecker == 0){
+//				//just select that tab
+//				System.out.println("existence: " + existencechecker);
+//				int pnumber = guiobject.returnIndexOfTabWithTitle("quran.xml.txt");
+//				System.out.println("Tab no: " + pnumber);
+//				guiobject.setCurrentSelection(pnumber);
+//				existencechecker = 1;
+//			} else {
+			
 			//add this tab to our tablist
 			tabList.add(new Tab(tabCounter, name, name));
 			
 			//now we read contents of file into a new jtextpane
 			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
 			//you still need to change the name to load it though
-			File filetoread = new File("C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\data set\\quran.xml.txt");
+			File filetoread = new File("C:\\Users\\SeeMai\\git\\CS412Project\\SearchSystem\\quran.xml.txt");
 			
 		    
 			        if ( filetoread.canRead() )                                     
@@ -273,9 +292,9 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			             );
 			        }
 			       
-	
+			
 			    
-	
+			
 			    
 			
 			break;

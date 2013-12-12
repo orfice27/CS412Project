@@ -279,6 +279,12 @@ public class GUI {
 		tabPane.setText(s);
 	}
 	
+	public int returnIndexOfTabWithTitle(String s){
+		int number = tabViewer.indexOfTab(s);
+		
+		return number;
+	}
+	
 	public void addNewTab(String title, JComponent component){
 		tabViewer.addTab(title, component);
 	}
