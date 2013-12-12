@@ -324,7 +324,8 @@ public class GUI {
 	
 	// Creates highlights around all occurrences of pattern in textComp
 	public void highlight(JTextComponent textComp, String pattern) {
-	  
+		  // First remove all old highlights
+	    removeHighlights(textComp);
 
 	try {
 	    Highlighter hilite = textComp.getHighlighter();
@@ -342,6 +343,17 @@ public class GUI {
 	} catch (BadLocationException e) {
 	}
 	}
+	
+	public void removeHighlights(JTextComponent textComp) {
+	    Highlighter hilite = textComp.getHighlighter();
+	    Highlighter.Highlight[] hilites = hilite.getHighlights();
+	for (int i=0; i<hilites.length; i++) {
+	    if (hilites[i].getPainter() instanceof MyHighlightPainter) {
+	        hilite.removeHighlight(hilites[i]);
+	    }
+	}
+	}
+	
 	
 	/**
 	 * Sets the text of the left text pane, the tab pane
