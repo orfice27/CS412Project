@@ -307,7 +307,35 @@ public class GUI {
 //					}
 				
 				resultDisplayArea.append(str+"\n");
-				highlight(resultDisplayArea, queryterm);
+				
+				//term to be highlighted
+				String highlighterm;
+				
+				//tokenize the line
+				StringTokenizer st = new StringTokenizer(str);
+
+				//for every token
+				while (st.hasMoreTokens()) {
+				//we extract the word
+				String word = st.nextToken();
+				
+				
+				//check if HIGHLIGHT exists
+				if(word.contains("highlight")){
+					int startindex = word.indexOf('>');
+					int endindex = word.indexOf('/');
+					//System.out.println("I'M HIGHLIGHTING: " + str);
+					startindex = startindex+1;
+					endindex = endindex-1;
+					System.out.println("Start index: " + startindex + " End Index: " + endindex);
+					highlighterm = word.substring(startindex, endindex);
+					highlight(resultDisplayArea, highlighterm);
+				}
+				//find contents to highlight
+				//call highlight on contents
+			//	System.out.println(str + "\n");
+				
+			}
 			}
 			
 		}

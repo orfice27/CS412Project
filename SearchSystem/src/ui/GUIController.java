@@ -194,7 +194,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		
 		guiobject.setTabsPaneWithStrings(documents);
 		JTextArea area = guiobject.resultDisplayArea;
-		guiobject.rehighlightarea(area,title);
+		//guiobject.rehighlightarea(area,title);
 		}
 		
 	}
