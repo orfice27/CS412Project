@@ -1,22 +1,12 @@
 package controller;
 
 import java.awt.Point;
-
-/**
- * This class controls all events related to the GUI including
- * button presses, changes made to the GUI and any mouse clicks.
- * It will then notify the GUI to update relative components with
- * the new results/content.
- */
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -26,18 +16,22 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import model.SearchResult;
 
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
 import view.GUI;
 import view.Tab;
 
+/**
+ * This class controls all events related to the GUI including
+ * button presses, changes made to the GUI and any mouse clicks.
+ * It will then notify the GUI to update relative components with
+ * the new results/content.
+ */
 public class GUIController implements ActionListener, ChangeListener, MouseListener{
 
 	private int tabCounter;
@@ -48,6 +42,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	private ArrayList<Tab> tabList;
 	private ArrayList<String> documents;
 	private int existencechecker;
+	private Searcher searcher;
 	
 	public GUIController(GUI gui){
 		guiobject = gui;
@@ -57,6 +52,13 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		tabList = new ArrayList<Tab>();
 		documents = new ArrayList<String>();
 		existencechecker = 0;
+		searcher = new Searcher();
+		try {
+			searcher.index("data set" + File.separator + "rel200");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -106,14 +108,10 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			String query = guiobject.getTxtpnSearchGui(); //query has passed our checks to extract query from the text field
 			
-			//pass the query into searcher
-			Searcher searcher = new Searcher("data set" + File.separator + "rel200", query);
-
 			try {
 				
-				results = (ArrayList)searcher.search(); //store the results in an arraylist
-			} catch (IOException | ParseException
-					| InvalidTokenOffsetsException e1) {
+				results = (ArrayList<SearchResult>) searcher.query(query); //store the results in an arraylist
+			} catch (IOException | ParseException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}

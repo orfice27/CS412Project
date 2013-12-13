@@ -37,76 +37,44 @@ public class Searcher {
 
 	private static final Version LUCENE_VERSION = Version.LUCENE_46;
 
-	private String root;
-	private String queryString;
 	private Directory directory;
 	private Analyzer analyzer;
-	private TopDocs searchResult;
 	private IndexSearcher isearcher;
-	private DirectoryReader ireader;
 
-	private Query query;
-
-	private List<SearchResult> searchResults;
-
-	/**
-	 * Creates an instance of searcher , given the root absolute path and a 
-	 * query the user wish to perform upon the system.
-	 * @param root - the absolute path the of the users root 
-	 * folder to the file corpus to be searched upon.
-	 * 
-	 * @param queryString the query the user wishes to check exists 
-	 * within the file corpus.
-	 */
-	public Searcher(String root, String queryString) {
-		this.root = root;
-		this.queryString = queryString;
-		this.directory = new RAMDirectory();
-		this.analyzer = new StandardAnalyzer(Searcher.LUCENE_VERSION);
+	public Searcher() {
 	}
 
-	public List<SearchResult> search() throws IOException, ParseException, InvalidTokenOffsetsException {
-		this.setupIndex();
-		this.queryIndex();
-		return this.searchResults;
-	}
 	/**
 	 * Creates the initial index from the users given root file directory path.
 	 * @throws IOException  the given root may contain no documents.
 	 */
-	private void setupIndex() throws IOException {
+	public void index(String root) throws IOException {
+		this.directory = new RAMDirectory();
+		this.analyzer = new StandardAnalyzer(Searcher.LUCENE_VERSION);
 		IndexWriterConfig config = new IndexWriterConfig(Searcher.LUCENE_VERSION, analyzer);
 		IndexWriter iwriter = new IndexWriter(this.directory, config);
-		this.parseDocuments(iwriter);
-		iwriter.close();
-	}
-	/**
-	 * Using a given indexWriter creates a list of all files contained below the root directory path.
-	 * @param iwriter - the given root directory's indexWriter
-	 * @throws IOException the given root may contain no documents.
-	 */
-	private void parseDocuments(IndexWriter iwriter) throws IOException {
-		List<File> files = new XMLParser(this.root).getParsedFiles();
-		for (File file : files) {
+		for (File file : new XMLParser(root).getParsedFiles()) {
 			SearchDocument sDoc = new SearchDocument(file);
 			iwriter.addDocument(sDoc.getDocument());
 		}
+		iwriter.close();
 	}
+
 	/**
 	 * Inspects an index of documents given a users query.
 	 * @throws IOException
 	 * @throws ParseException
 	 * @throws InvalidTokenOffsetsException 
 	 */
-	private void queryIndex() throws IOException, ParseException, InvalidTokenOffsetsException {
-		ireader = DirectoryReader.open(this.directory);
+	public List<SearchResult> query(String queryString) throws IOException, ParseException {
+		DirectoryReader ireader = DirectoryReader.open(this.directory);
 		this.isearcher = new IndexSearcher(ireader);
 		QueryParser parser = new QueryParser(Searcher.LUCENE_VERSION, SearchDocument.FIELD_CONTENT, this.analyzer);
-		query = parser.parse(this.queryString);
-		this.searchResult = this.isearcher.search(query, null, 1000);
-		this.handleResults();
+		Query query = parser.parse(queryString);
+		List<SearchResult> searchResults = this.handleResults(query, this.isearcher.search(query, null, 1000));
 		ireader.close();
-		directory.close();
+//		this.directory.close();
+		return searchResults;
 	}
 
 	/**
@@ -114,30 +82,37 @@ public class Searcher {
 	 * @throws IOException
 	 * @throws InvalidTokenOffsetsException 
 	 */
-	private void handleResults() throws IOException, InvalidTokenOffsetsException {
-		this.searchResults = new ArrayList<SearchResult>();
+	private List<SearchResult> handleResults(Query query, TopDocs topDocs) throws IOException {
+		List<SearchResult> searchResults = new ArrayList<SearchResult>();
 		SimpleHTMLFormatter htmlFormatter = new SimpleHTMLFormatter("<highlight>", "</highlight>");
 		Highlighter highlighter = new Highlighter(htmlFormatter, new QueryScorer(query));
 
-		ScoreDoc[] hits = this.searchResult.scoreDocs;
+		ScoreDoc[] hits = topDocs.scoreDocs;
+		int id;
+		Document doc;
+		TokenStream tokenStream;
 		SearchResult result;
 		List<String> results;
 
 		for (int i = 0; i < hits.length; i++) {
 			results = new ArrayList<String>();
-			int id = hits[i].doc;
-			Document doc = isearcher.doc(id);
-			String text = doc.get(SearchDocument.FIELD_CONTENT);
-			TokenStream tokenStream = TokenSources.getAnyTokenStream(isearcher.getIndexReader(), id, SearchDocument.FIELD_CONTENT, analyzer);
-			TextFragment[] frag = highlighter.getBestTextFragments(tokenStream, text, false, 10);
-			for (int j = 0; j < frag.length; j++) {
-				if ((frag[j] != null) && (frag[j].getScore() > 0)) {
-					results.add((frag[j].toString()));
+			id = hits[i].doc;
+			doc = isearcher.doc(id);
+			tokenStream = TokenSources.getAnyTokenStream(isearcher.getIndexReader(), id, SearchDocument.FIELD_CONTENT, analyzer);
+			try {
+				for (TextFragment frag : highlighter.getBestTextFragments(tokenStream, doc.get(SearchDocument.FIELD_CONTENT), false, 10)) {
+					if ((frag != null) && (frag.getScore() > 0)) {
+						results.add((frag.toString()));
+					}
 				}
+			} catch (InvalidTokenOffsetsException e) {
+				System.err.printf("Invalid token offsets: %s\n", e.getMessage());
 			}
 			result = new SearchResult(i + 1, doc.get(SearchDocument.FIELD_FILENAME), results);
-			this.searchResults.add(result);
+			searchResults.add(result);
 		}
+
+		return searchResults;
 	}
 
 
@@ -150,10 +125,11 @@ public class Searcher {
 		String queryString = args[0];
 		String fileOrDir = args[1];
 
-		Searcher s = new Searcher(fileOrDir, queryString);
+		Searcher s = new Searcher();
 		try {
-			s.search();
-		} catch (IOException | ParseException | InvalidTokenOffsetsException e) {
+			s.index(fileOrDir);
+			s.query(queryString);
+		} catch (IOException | ParseException e) {
 			System.err.printf("Error search '%s' for '%s': %s\n", fileOrDir, queryString, e.getMessage());
 		}
 	}
