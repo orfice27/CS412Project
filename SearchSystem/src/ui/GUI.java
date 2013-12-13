@@ -246,7 +246,9 @@ public class GUI {
 		JMenu mnMenu_1 = new JMenu("Options");
 		menuBar.add(mnMenu_1);
 
-		JMenuItem mntmMenuitem_1 = new JMenuItem("MenuItem2");
+		JMenuItem mntmMenuitem_1 = new JMenuItem("Close tab");
+		mntmMenuitem_1.setActionCommand("closetab");
+		mntmMenuitem_1.addActionListener(controller);
 		mnMenu_1.add(mntmMenuitem_1);
 	}
 
@@ -492,6 +494,22 @@ public class GUI {
 		return s;
 	}
 	
+	/**
+	 * 
+	 * @return the index value of the current tab selected
+	 */
+	public int getSelectedTab(){
+		int selection = tabViewer.getSelectedIndex();
+		return selection;
+	}
+	
+	/**
+	 * removes a tab at specified index
+	 * @param index - number of tab to be removed
+	 */
+	public void removeTab(int index){
+		tabViewer.remove(index);
+	}
 	/**
 	 * 
 	 * @return the frame of the GUI 

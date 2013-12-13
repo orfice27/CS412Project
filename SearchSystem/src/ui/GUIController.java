@@ -146,8 +146,31 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			break;
 			
-		case "nquery":
-			//Create a new query view
+		/*remove this area to get rid of exception being thrown on console
+		 * involves removing entire close tab function though
+		 */
+		case "closetab":
+			System.out.println("close tab");
+			if(tabList.size()==0){
+				JFrame frame = guiobject.getFrame();
+				JOptionPane.showMessageDialog(frame,
+					"No tabs to close",
+					"No tabs",
+					JOptionPane.ERROR_MESSAGE); //otherwise display an error dialogue
+					
+			} else {
+				
+				//find currently selected tab and delete this from GUI
+				if(guiobject.getSelectedTab()!=-1){
+				guiobject.removeTab(guiobject.getSelectedTab());
+				tabList.remove(guiobject.getSelectedTab());
+				
+			} else {
+				JFrame frame = guiobject.getFrame();
+				JOptionPane.showMessageDialog(frame,
+					    "All tabs closed"); 
+			}
+			}
 			break;
 	}
 		
