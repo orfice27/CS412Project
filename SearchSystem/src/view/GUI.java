@@ -1,4 +1,4 @@
-package ui;
+package view;
 
 
 import java.awt.Color;
@@ -46,7 +46,7 @@ import javax.swing.text.Utilities;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
-import wordAutocomplete.AutoCompleteTextField;
+import controller.GUIController;
 
 
 /**

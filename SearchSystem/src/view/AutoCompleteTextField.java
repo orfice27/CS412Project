@@ -1,4 +1,4 @@
-package wordAutocomplete;
+package view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;

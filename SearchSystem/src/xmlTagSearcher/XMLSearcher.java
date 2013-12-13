@@ -1,4 +1,4 @@
-package searcher;
+package xmlTagSearcher;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import model.SearchResult;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
-import controller.Searcher;
 import xmlTagSearcher.Tag.TagOptions;
+import controller.Searcher;
 
 public class XMLSearcher extends Searcher {
 

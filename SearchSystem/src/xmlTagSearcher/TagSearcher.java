@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 import controller.Searcher;
-import searcher.XMLSearcher;
 import xmlParser.FileFinder;
 
 public class TagSearcher {

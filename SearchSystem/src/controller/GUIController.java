@@ -1,4 +1,4 @@
-package ui;
+package controller;
 
 import java.awt.Point;
 
@@ -35,7 +35,8 @@ import model.SearchResult;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
-import controller.Searcher;
+import view.GUI;
+import view.Tab;
 
 public class GUIController implements ActionListener, ChangeListener, MouseListener{
 

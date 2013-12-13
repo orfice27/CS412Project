@@ -1,4 +1,4 @@
-package searcher;
+package xmlTagSearcher;
 
 public class NonXMLException extends Exception {
 
