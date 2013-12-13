@@ -1,4 +1,4 @@
-package history;
+package controller;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import model.HistoryEntry;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -21,29 +23,27 @@ public class History {
 
 	private static final String DATE_FORMAT = "Y/M/d H:m:s:S Z";
 
-	private SortedSet<HistoryQuery> history;
+	private SortedSet<HistoryEntry> history;
 	private SimpleDateFormat dateFormat;
 	private String fileName;
 
 	public History(String fileName) {
-		this.history = new TreeSet<HistoryQuery>();
+		this.history = new TreeSet<HistoryEntry>();
 		this.fileName = fileName;
 		this.dateFormat = new SimpleDateFormat(History.DATE_FORMAT);
 	}
 
 	public void addQuery(String query) {
-		HistoryQuery hq = new HistoryQuery();
-		hq.query = query;
-		hq.time = new Date();
+		HistoryEntry hq = new HistoryEntry(query, new Date());
 		history.add(hq);
 	}
 
-	public SortedSet<HistoryQuery> getQueries() {
+	public SortedSet<HistoryEntry> getQueries() {
 		return this.history;
 	}
 
 	public void clear() {
-		this.history.clear();;
+		this.history.clear();
 	}
 
 	public void save() {
@@ -67,13 +67,14 @@ public class History {
 		this.fromJSON(json);
 	}
 
+	@SuppressWarnings("unchecked")
 	private JSONArray toJSON() {
 		JSONArray c = new JSONArray();
 		JSONObject o;
-		for (HistoryQuery hq : this.history) {
+		for (HistoryEntry hq : this.history) {
 			o = new JSONObject();
-			o.put("query", hq.query);
-			o.put("time", dateFormat.format(hq.time));
+			o.put("query", hq.getQuery());
+			o.put("time", dateFormat.format(hq.getTime()));
 			c.add(o);
 		}
 		return c;
@@ -82,32 +83,17 @@ public class History {
 	private void fromJSON(String json) {
 		JSONArray c = (JSONArray)JSONValue.parse(json);
 		JSONObject o;
-		HistoryQuery hq;
+		String query = null;
+		Date time = null;
 		for (Object oc : c) {
 			o = (JSONObject)oc;
-			hq = new HistoryQuery();
-			hq.query = (String) o.get("query");
+			query = (String) o.get("query");
 			try {
-				hq.time = dateFormat.parse((String) o.get("time"));
+				time = dateFormat.parse((String) o.get("time"));
 			} catch (ParseException e) {
-				System.err.printf("Error parsing time '%s' of query '%s': %s\n",  hq.time, hq.query, e.getMessage());
+				System.err.printf("Error parsing time '%s' of query '%s': %s\n",  time, query, e.getMessage());
 			}
-			this.history.add(hq);
-		}
-	}
-
-	private class HistoryQuery implements Comparable<HistoryQuery> {
-		public String query;
-		public Date time;
-
-		@Override
-		public int compareTo(HistoryQuery o) {
-			int comp = time.compareTo(o.time);
-			if (comp != 0) {
-				return comp;
-			} else {
-				return query.compareTo(o.query);
-			}
+			this.history.add(new HistoryEntry(query, time));
 		}
 	}
 
