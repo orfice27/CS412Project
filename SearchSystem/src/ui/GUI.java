@@ -50,18 +50,8 @@ import wordAutocomplete.AutoCompleteTextField;
 
 
 /**
- * A {@link Document} performing auto completion on the inserted text. This
- * document can be used on any {@link JTextComponent}.
- * <p>
- * The completion will only happen for inserts, that is, when characters are
- * typed. If characters are erased, no new completion is suggested until a new
- * character is typed.
- * 
- * @see CompletionService and AutoCompleteDocument classes
- * 
- * @author Samuel Sjoberg, http://samuelsjoberg.com
- * Modified for use in CS412 Lucene Search System Project by SeeMai Chan
- * @version 2.0.0
+ *  
+ * Front end of the GUI
  */
 
 public class GUI {
@@ -73,15 +63,12 @@ public class GUI {
 	private JTextPane tabPane;
 	private JTabbedPane tabViewer;
 	ArrayList<String> words;
-	Style cwStyle;
+	
 	JTextArea resultDisplayArea;
 	String highlighterm;
 	
-	StyleContext sc = new StyleContext();
-    final DefaultStyledDocument doc = new DefaultStyledDocument(sc);
-    
     // An instance of the subclass of the default highlight painter
-   MyHighlightPainter myHighlightPainter = new MyHighlightPainter(Color.yellow);
+    MyHighlightPainter myHighlightPainter = new MyHighlightPainter(Color.yellow);
     
     
 
@@ -110,9 +97,17 @@ public class GUI {
 		
 	}
 	
+	/**
+	 * Reads the parsed dictionary file and adds all terms to the words arraylist for word autocompletion.
+	 * 
+	 */
+	
 	private void readAndPopulateDictionary(){
 		
+		//The file
 		File mainFile = new File("theologicaldictionary.txt.txt");
+		
+		
 		words = new ArrayList<String>();
 		
 		try {
@@ -125,17 +120,14 @@ public class GUI {
 				while (st.hasMoreTokens()) {
 				//we extract the word
 				String word = st.nextToken();
-				
-				
+				//add the word to the list
 				words.add(word);
-					
-			
 				
 				} 
-				}
+			}
 			br.close(); 
 		}
-				catch (FileNotFoundException e) {
+			catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		//Reads the XML file
@@ -144,8 +136,8 @@ public class GUI {
 			e.printStackTrace();
 		}
 		
-	
-			words.addAll(Arrays.asList("Quran", "Old Testament", "New Testament", "Testament",
+		//these are extra words not included in the dictionary but I figured we needed as they're the names of our documents
+		words.addAll(Arrays.asList("Quran", "Old Testament", "New Testament", "Testament",
 					"Mormon", "The Book Of Mormon"));
 		}
 		
@@ -186,10 +178,12 @@ public class GUI {
 		//Text field for query, triggers a search when enter is pressed
 		txtpnSearchGui = new AutoCompleteTextField(60);
 		
+		//this loop goes through our list of dictionary terms and adds them as possibilities for autocomplete
 		for(String s: words){
 			txtpnSearchGui.addPossibility(s);
-			//System.out.println(s);
 		}
+		
+		
 		//txtpnSearchGui.setText("Search GUI");
 		txtpnSearchGui.addActionListener(controller);
 		txtpnSearchGui.setActionCommand("query");
@@ -213,8 +207,8 @@ public class GUI {
 		tabPane.setEditable(false);
 		tabPane.addMouseListener(controller);
 		
-		//tab viewer
-				tabViewer = new JTabbedPane();
+		//tab viewer - The tabbed pane holder who does all tab related activities
+		tabViewer = new JTabbedPane();
 
 		JScrollPane documentScroll = new JScrollPane(tabPane, 
 				   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -222,16 +216,12 @@ public class GUI {
 		JScrollPane resultsScroll = new JScrollPane(tabViewer, 
 				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
+		/*a listener to check for changes made to the tabbedpane such as selecting a different tab
+		 	this allows us to update the file lister to the left appropriately to match the correct
+		 	query/tab being selected. */
 		
 		tabViewer.addChangeListener(controller);
 		
-		//for highlighting later
-	
-	    // Create and add the constant width style
-	    cwStyle = sc.addStyle("ConstantWidth", null);
-	    StyleConstants.setFontFamily(cwStyle, "monospaced");
-	    StyleConstants.setForeground(cwStyle, Color.YELLOW);
-
 		//Splits tabPane and results pane
 		JSplitPane textSplitPane= new JSplitPane(1,documentScroll,resultsScroll);
 		textSplitPane.setDividerLocation(120);		
@@ -265,55 +255,41 @@ public class GUI {
 		return txtpnSearchGui.getText();
 	}
 
-
 	
-public JTextArea printResults(ArrayList<SearchResult> r, String queryterm){
-		
-		//we need to locate all the HIGHLIGHT terms and change them to yellow
-		//doc.setCharacterAttributes(49, 13, cwStyle, false);
+	/**
+	 * Takes a list of search results and formats them appropriately for display
+	 * on the GUI. This includes parsing the contents to find where the contextual
+	 * <highlight> tags are located and extract the terms referenced to be highlighted 
+	 * in yellow. It then removes the <highlight> tags from the GUI display but
+	 * keeps them in the original string from the results file.
+	 * @param r - the list of searchresults to be displayed on the GUI
+	 */
+	
+	public JTextArea printResults(ArrayList<SearchResult> r){
 		
 		
 		resultDisplayArea = new JTextArea();
 		resultDisplayArea.setText("");
-		//resultsPane.setText("");
+		
 		for(SearchResult s: r){
 			resultDisplayArea.append("Results Found in "+s.getFileName()+" at "+s.getFilePath());
 			resultDisplayArea.append("\n-----------------------------------------------------\n\n");
+			
+			
+			//we loop through the results
 			for(String str : s.getResults()){
 				
-//				//we gotta check to see if the string has any HIGHLIGHT tags
-//				if(str.contains("Quran")){
-//				int startindex = str.indexOf('Q');
-//				int endindex = str.indexOf('n');
-//				doc.setCharacterAttributes(startindex, endindex, cwStyle, false);
-//				
+				/*str contains the FULL string obtained from results
+				 * this means it includes the <highlight> tags
+				 * we need to extract everything BUT the highlight tags 
+				 * then reformat this for GUI display
+				 */
 				
-					//we need to extract where the term to be highlighted starts and ends
-//				outerloop:
-//					for(int i=0; i<str.length(); i++){
-//						if(str.charAt(i) == '>'){ //<highlight>Quran</highlight>
-//							startindex = i+1;
-//							for (int j=0; j<str.length(); j++){
-//								if(str.charAt(j) == '/'){
-//									endindex = j-1;
-//									ns = str.substring(startindex, endindex);
-//									System.out.println("New strings: " + ns);
-//									doc.setCharacterAttributes(startindex, endindex, cwStyle, false);
-//									break outerloop;
-//								}
-//								
-//							}
-//						}
-//					}
+				highlighterm =""; //resetting the highlighterm variable so we don't get the last one we used for highlighting!
+				String firstpart; //first part of the string (everything before the highlight tag)
+				String secondpart; //second part of the string (everything after the highlight tag)
 				
-				
-				
-				//term to be highlighted
-				highlighterm ="";
-				String firstpart;
-				String secondpart;
-				
-				//tokenize the line
+				//tokenize the line so we get individual "words"
 				StringTokenizer st = new StringTokenizer(str);
 
 				//for every token
@@ -322,63 +298,71 @@ public JTextArea printResults(ArrayList<SearchResult> r, String queryterm){
 				String word = st.nextToken();
 				
 				
-				//check if HIGHLIGHT exists
+				//check if HIGHLIGHT exists within the word
 				if(word.contains("highlight")){
 					
+					
+					//if it does we extract the location of the > and / characters
+					//these symbols represent the end of the start tag and the end of the end tag
+					//<highlight>WORD</highlight>
 					int startindex = word.indexOf('>');
 					int endindex = word.indexOf('/');
 					
-					//System.out.println("I'M HIGHLIGHTING: " + str);
-					startindex = startindex+1;
-					endindex = endindex-1;
-					//System.out.println("Start index: " + tagstart + " End Index: " + tagend);
 					
-					highlighterm = word.substring(startindex, endindex);
-					//String finalstring = firstpart + highlighterm + secondpart;
+					startindex = startindex+1; //we extract one place after the > start tag
+					endindex = endindex-1; //and one place before the / end tag
 					
-					highlight(resultDisplayArea, highlighterm);
+					highlighterm = word.substring(startindex, endindex); //this creates the term to be highlighted
+					
+					highlight(resultDisplayArea, highlighterm); //this highlights the term
 				}
 				}
 				
+				/*
+				 * Because our parsed religious texts still have some strange tags included,
+				 * using a search on the > and / characters will end up removing/highlighting
+				 * terms that are NOT supposed to be highlighted.
+				 * The following section of code fixes this by recreating the string that
+				 * is to be displayed on the GUI.
+				 */
 				
-				int tagstart = str.indexOf("<highlight");
-				//System.out.println("Tag start: " + tagstart);
 				
-				//int tagend = str.indexOf('>', str.indexOf('>') + 1);
-				int tagend = str.indexOf("/highlight>");
-				//System.out.println("Tag end: " + tagend);
-				firstpart= str.substring(0,tagstart);
-				secondpart=str.substring(tagend+11,str.length());
-				String finalstring = firstpart + highlighterm +secondpart;
-			//	System.out.println("S2: " + secondpart);
-				resultDisplayArea.append(finalstring+"\n");
-			//	resultDisplayArea.append(str +"\n");
+				int tagstart = str.indexOf("<highlight"); //returns the position of the < in this string
+				int tagend = str.indexOf("/highlight>"); //returns the position of the / in this string
 				
-				System.out.println("String: " + str);
 				
-				//System.out.println("FINAL STRING: " + finalstring);
-//				System.out.println("FirstPart: " + firstpart);
-//				System.out.println("SecondPart: " + secondpart);
-				//find contents to highlight
-				//call highlight on contents
-			//	System.out.println(str + "\n");
+				firstpart= str.substring(0,tagstart); //first part of the string is from the start (0) until the < start
+				secondpart=str.substring(tagend+11,str.length()); //second part of the string is +11 from tagend (/) until the end of the string
+				
+				
+				String finalstring = firstpart + highlighterm +secondpart; //join all three parts to get the final string
+			
+				resultDisplayArea.append(finalstring+"\n"); //then display this string on the GUI
+//				resultDisplayArea.append(str +"\n"); //this returns the ORIGINAL string (without the tag removal)
 				
 			}
 			}
 		return resultDisplayArea;
 		}
 	
+	/**
+	 * @return the display area object for the results
+	 */
+	
 	public JTextArea returnDisplay(){
 		return resultDisplayArea;
 	}
 	
-	public void rehighlightarea(JTextComponent comp, String term){
-		highlight(comp, term);
-	}
-	
+	/**
+	 * Sample obtained from: http://stackoverflow.com/questions/5674128/jtextpane-highlight-text
+	 * This highlights the string pattern specified within a TextComponent
+	 * @param textComp - the text component
+	 * @param pattern - the string pattern to be highlighted
+	 */
 	// Creates highlights around all occurrences of pattern in textComp
 	public void highlight(JTextComponent textComp, String pattern) {
-		  // First remove all old highlights
+		
+		// First remove all old highlights
 	    removeHighlights(textComp);
 
 	try {
@@ -398,14 +382,20 @@ public JTextArea printResults(ArrayList<SearchResult> r, String queryterm){
 	}
 	}
 	
+	/**
+	 * Sample obtained from: http://stackoverflow.com/questions/5674128/jtextpane-highlight-text
+	 * This removes old highlights to avoid conflicts when rehighlighting a new set of results
+	 * @param textComp - the text component to remove highlighting from
+	 */
+	
 	public void removeHighlights(JTextComponent textComp) {
 	    Highlighter hilite = textComp.getHighlighter();
 	    Highlighter.Highlight[] hilites = hilite.getHighlights();
-	for (int i=0; i<hilites.length; i++) {
-	    if (hilites[i].getPainter() instanceof MyHighlightPainter) {
+	    for (int i=0; i<hilites.length; i++) {
+	    	if (hilites[i].getPainter() instanceof MyHighlightPainter) {
 	        hilite.removeHighlight(hilites[i]);
+	    	}	
 	    }
-	}
 	}
 	
 	
@@ -420,6 +410,12 @@ public JTextArea printResults(ArrayList<SearchResult> r, String queryterm){
 		}
 	}
 	
+	/**
+	 * Sets the text of the left text pane, the tab pane
+	 * Exactly the same as above but with a list of strings instead
+	 * @param s - the list of strings to be displayed
+	 */
+	
 	public void setTabsPaneWithStrings(ArrayList<String> s){
 		tabPane.setText("");
 		for (String str : s){
@@ -427,63 +423,118 @@ public JTextArea printResults(ArrayList<SearchResult> r, String queryterm){
 		}
 	}
 	
+	/**
+	 * Sets the text of the left text pane, the tab pane
+	 * Exactly the same as above two but with a single string
+	 * @param s - the single string to be displayed
+	 */
+	
 	public void setTabsPaneWithTitle(String s){
 		tabPane.setText(s);
 	}
 	
+	
+	/**
+	 * Returns the index number of the tab with the title specified
+	 * @param s - the title
+	 * @return - the tab number in which the tab has title specified
+	 */
 	public int returnIndexOfTabWithTitle(String s){
 		int number = tabViewer.indexOfTab(s);
 		
 		return number;
 	}
 	
+	/**
+	 * Adds a new tab with with title and component specified
+	 * @param title - the title of the tab
+	 * @param component - the component to be added
+	 */
+	
 	public void addNewTab(String title, JComponent component){
 		tabViewer.addTab(title, component);
 	}
+	
+	/**
+	 * Insert a new tab on the tabbed pane at the specified position with provided title and component
+	 * @param title - title of the tab
+	 * @param component - component to be added
+	 * @param position - position to be added at
+	 */
 	
 	public void insertNewTab(String title, JComponent component, int position){
 		tabViewer.insertTab(title, null, component, null, position);
 	}
 	
+	/**
+	 * 
+	 * @return the number of tabs 
+	 */
 	public int getTabSize (){
 		return tabViewer.getTabCount();
 	}
 	
+	/**
+	 * Select the current tab at given position (number)
+	 * @param position - the tab to be selected
+	 */
 	public void setCurrentSelection(int position){
 		tabViewer.setSelectedIndex(position);
 	}
 	
+	/**
+	 * Get the title of the current tab selected
+	 * @return the title of the tab
+	 */
 	public String getCurrentTabTitle(){
 		int selection = tabViewer.getSelectedIndex();
 		String s = tabViewer.getTitleAt(selection);
 		return s;
 	}
+	
+	/**
+	 * 
+	 * @return the frame of the GUI 
+	 */
 	public JFrame getFrame(){
 		return frame;
 	}
 	
+	/**
+	 * 
+	 * @return the tabbed panes
+	 */
+	public JTabbedPane returnTabViewer(){
+		return tabViewer;
+	}
+	
+	/**
+	 * This method takes a mouse point and converts this to an offset
+	 * relative to the document model (the GUI).
+	 * Using the offset, it then extracts the word displayed on the
+	 * document using the getWordStart and getWordEnd methods.
+	 * @param e - the location of the mouse
+	 * @return the name of the document clicked
+	 */
 	public String returnDocumentClicked(Point e){
+		
 		int offset = tabPane.viewToModel(e);
+		
 		String text=null;
 		try {
 			int start = Utilities.getWordStart(tabPane, offset);
 			int end = Utilities.getWordEnd(tabPane, offset);
-			System.out.println("offset: "+ offset);
-			System.out.println("start: " + start + " end: " + end);
+			
 			text = tabPane.getText(start, end-start);
-			System.out.println("Text extracted: " + text);
 			
 		} catch (BadLocationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		//tabPane.setCaretPosition(tabPane.viewToModel(e)); 
 		return text;
 	}
 	
-	public JTabbedPane returnTabViewer(){
-		return tabViewer;
-	}
+	
 	
 	// A private subclass of the default highlight painter
 	class MyHighlightPainter extends DefaultHighlighter.DefaultHighlightPainter {

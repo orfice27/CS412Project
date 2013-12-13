@@ -18,6 +18,15 @@ import org.apache.lucene.util.Version;
 
 import xmlParser.FileFinder;
 
+/**
+ *  
+ * Just a class I coded to extract terms from that stupid dictionary with all the weird punctuation and nonsense.
+ * The coding is extremely ugly so any questions ask me instead.
+ * It's not really needed unless the theologicaldictionary.txt.txt vanishes from your hard drive/github. Then you can just run this
+ * class on the file and reparse it. I won't be cleaning up the code here because it's not needed.
+ * -SeeMai
+ */
+
 public class capitalSearcher {
 	private static File mainFile;
 	private static ArrayList<File> parsedFiles;

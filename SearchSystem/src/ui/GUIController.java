@@ -1,6 +1,13 @@
 package ui;
 
 import java.awt.Point;
+
+/**
+ * This class controls all events related to the GUI including
+ * button presses, changes made to the GUI and any mouse clicks.
+ * It will then notify the GUI to update relative components with
+ * the new results/content.
+ */
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -35,12 +42,8 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	private GUI guiobject;
 	private ArrayList<SearchResult> results;
 	private ArrayList<String> searchTerms;
-	private int tabNumber;
-	private String title;
 	private ArrayList<Tab> tabList;
 	private ArrayList<String> documents;
-	private String newline;
-	private ArrayList<String> fileContentsToDisplay;
 	private int existencechecker;
 	
 	public GUIController(GUI gui){
@@ -50,8 +53,6 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		tabCounter = 0;
 		tabList = new ArrayList<Tab>();
 		documents = new ArrayList<String>();
-		newline = "\n";
-		fileContentsToDisplay = new ArrayList<String>();
 		existencechecker = 0;
 	}
 
@@ -59,38 +60,35 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
 		case "query":	
+			
 			//Run context searcher on query
-		
-			if(guiobject.getTxtpnSearchGui().isEmpty()){
-				System.out.println("error");
+			if(guiobject.getTxtpnSearchGui().isEmpty()){ //make sure the text field isn't empty!
 				
 				JFrame frame = guiobject.getFrame();
-				//custom title, error icon
 				JOptionPane.showMessageDialog(frame,
 				    "No query was entered.",
 				    "Empty query",
-				    JOptionPane.ERROR_MESSAGE);
-			} else if (containsDigit(guiobject.getTxtpnSearchGui())==true){
-				System.out.println("number error");
+				    JOptionPane.ERROR_MESSAGE); //otherwise display an error dialogue
+				
+				
+			} else if (containsDigit(guiobject.getTxtpnSearchGui())==true){ //make sure the user didn't enter numbers in the text field
 				
 				JFrame frame = guiobject.getFrame();
-				//custom title, error icon
 				JOptionPane.showMessageDialog(frame,
 				    "Numbers are not accepted. Try again.",
 				    "Invalid query",
-				    JOptionPane.ERROR_MESSAGE);
-			}else {
-			
+				    JOptionPane.ERROR_MESSAGE); //otherwise display an error dialogue
+			} else {
 				
 			
-			String query = guiobject.getTxtpnSearchGui();
+			String query = guiobject.getTxtpnSearchGui(); //query has passed our checks to extract query from the text field
 			
-			
-			
+			//pass the query into searcher
 			Searcher searcher = new Searcher("data set" + File.separator + "rel200", query);
 
 			try {
-				results = (ArrayList)searcher.search();
+				
+				results = (ArrayList)searcher.search(); //store the results in an arraylist
 			} catch (IOException | ParseException
 					| InvalidTokenOffsetsException e1) {
 				// TODO Auto-generated catch block
@@ -98,49 +96,33 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			}
 			
 			searchTerms.add(query); //add the term to a list so we can use again later
-			if(results.isEmpty()){
+			
+			
+			if(results.isEmpty()){ //check to see if any results were returned for the query
 				System.out.println("empty results");
-
-				
 				JFrame frame = guiobject.getFrame();
-				//custom title, error icon
 				JOptionPane.showMessageDialog(frame,
-					    "No results were found");
+					    "No results were found"); //return a message if there were no results found
 			} else {
 			
-			tabList.add(new Tab(tabCounter, results, query));
-	
-			guiobject.printResults(tabList.get(tabList.size() - 1).getResults(),query); //this displays results to right pane
+				
+			/*create a new Tab object to store query related information
+			 * Each tab contains a counter (the number of tab upon creation), 
+			 * the results for that query 
+			 * and the query term itself
+			 */
+			tabList.add(new Tab(tabCounter, results, query)); 
+			//guiobject.printResults(tabList.get(tabList.size() - 1).getResults()); //this displays results to right pane
 			
-	
-			guiobject.insertNewTab(query, guiobject.printResults(results, query),0);
-			 
-			guiobject.setCurrentSelection(0);
+			
+			guiobject.insertNewTab(query, guiobject.printResults(results),0); //inserts a new tab with the query and results
+			guiobject.setCurrentSelection(0); //forces selection to 0 so that newest query is always the current tab
 			}
 			
-			
-			for (Tab t:tabList)
-			{
-				System.out.println("tab no: " + t.getTabLocation() + " tab results: " + t.getDocumentName() + " tab title: " + t.getTitle() );
-				System.out.println("Current tab title: " + guiobject.getCurrentTabTitle());
 			}
-			
-			
-			//this adds a new tab for each query 
-			guiobject.setTabsPane(results);
-			//this ADDS document names to the eventually browsable left pane
-			}
-			
-			for (String s: searchTerms){
-				//System.out.println(s);
-			}
-			tabCounter++;
+			tabCounter++; //keeps a counter of the number of tabs created so far
 			
 			break;
-			
-			
-			
-	
 			
 		case "nquery":
 			//Create a new query view
@@ -149,7 +131,11 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		
 	}
 	
-	//just an internal method for checking numbers
+	/**
+	 * Just an internal method for checking numbers
+	 * @param s - the string to be checked
+	 * @return true if numbers exist else false
+	 */
 	private boolean containsDigit(String s){  
 	    boolean containsDigit = false;
 
@@ -164,176 +150,118 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	    return containsDigit;
 	}
 
+	/**
+	 * The change listener's main method
+	 * This checks to see if the tabbed panes state has been changed
+	 * Aka, whether we have switched viewing to another tab so the
+	 * system knows to update the file listing to the left
+	 */
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
-		//System.out.println("tab changed");
 		
-		//get the title of the current tab selected
-		String title = guiobject.getCurrentTabTitle();
+		String title = guiobject.getCurrentTabTitle(); //get the title of the current tab selected
 		
-		//if its an opened document, just make the section blank
-		if(title.contains("txt")){
-			guiobject.setTabsPaneWithTitle(title);
+		if(title.contains("txt")){ //if its a file document (one we opened)
+			guiobject.setTabsPaneWithTitle(title); //then only display document title on the results on left pane
 		} else {
-		
-		//now we look through list of tabs
-		for (int i=0; i<tabList.size(); i++){
-			Tab tabtocheck = tabList.get(i);
-			if(tabtocheck.getTitle().equals(title)){
-				index = i;
-				documents = tabtocheck.getDocumentName();
+			
+		for (int i=0; i<tabList.size(); i++){ //now we look through list of tabs
+			Tab tabtocheck = tabList.get(i); //get the first tab in the list
+			if(tabtocheck.getTitle().equals(title)){ //check the tabs title is equal to our current tab title
+				documents = tabtocheck.getDocumentName(); //if it is then get the document names for that tab
 			}
 		}
+		guiobject.setTabsPaneWithStrings(documents); //then display these document names to the results on the left pane
 		
-		System.out.println("Tab index selected: " + index);
-		
-		guiobject.setTabsPaneWithStrings(documents);
-		JTextArea area = guiobject.resultDisplayArea;
-		//guiobject.rehighlightarea(area,title);
 		}
 		
 	}
+	
+	/**
+	 * The mouse listener's maid method for mouse clicks
+	 * This checks for any clicks made by the user.
+	 * The position of the click is converted into a document offset so we can extract
+	 * the filename in which the user has clicked on the left.
+	 * Then we open the file with the filename extracted by matching the
+	 * name using a switch/case statement.
+	 */
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println("mouse clicked");
-		Point p = new Point(e.getX(), e.getY());
-		String name = guiobject.returnDocumentClicked(p);
-		System.out.println("name: " + name);
 		
-		//check string name against filenames and open relevant document
-		switch(name){
+		Point p = new Point(e.getX(), e.getY()); //creates a new Point object storing x/y coordinates
+		String name = guiobject.returnDocumentClicked(p); //returns the document name at that point
+		
+		switch(name){ //check string name against filenames and open relevant document
 		
 		case "quran.xml.txt":
 			
-			int checker =0;
+			int checker = 0;
 			
-			//do stuff
-			
-			System.out.println("Open Quran");
-			
-			//check if we already had file opened - no point reopening
-			checker = checkForFile("quran.xml.txt");
+			checker = checkForFile("quran.xml.txt"); //check if we already had file opened - no point reopening same file multiple times
 			
 			if(checker == 1){
-				//if so then just select tab
-				openTabWithName("quran.xml.txt");
-				
+				openTabWithName("quran.xml.txt"); //if it's opened then just select tab
 			} else {
 			
-			//add this tab to our tablist
-			tabList.add(new Tab(tabCounter, name, name));
-			
-			//now we read contents of file into a new jtextpane
-			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
-			//you still need to change the name to load it though
-			File filetoread = new File("quran.xml.txt");
-			
-		    
-			readAFile(filetoread);      
-			    
-			
+			tabList.add(new Tab(tabCounter, name, name)); //add this tab to our tablist as its a new file we have not opened yet
+			File filetoread = new File("quran.xml.txt"); //create a file object with the document name
+			readAFile(filetoread); //pass this to an internal method to be opened
 			}  
-			
 			break;
 			
 		case "nt.xml.txt":
 			
+			int checkerNT = 0;
 			
-			System.out.println("Open New Testament");
-			
-			int checkerNT =0;
-			
-			//check if we already had file opened - no point reopening
 			checkerNT = checkForFile("nt.xml.txt");
 			
 			if(checkerNT == 1){
-				//if so then just select tab
 				openTabWithName("nt.xml.txt");
-				
 			} else {
 			
-			//add this tab to our tablist
 			tabList.add(new Tab(tabCounter, name, name));
-			
-			//now we read contents of file into a new jtextpane
-			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
-			File filetoread = new File("nt.xml.txt");
-			
-		    
+			File filetoread = new File("nt.xml.txt"); 
 			readAFile(filetoread);      
-			    
-			
 			} 
 			
 			break;
 			
-			case "ot.xml.txt":
+		case "ot.xml.txt":
 			
+			int checkerOT = 0;
 			
-			System.out.println("Open Old Testament");
-			
-			int checkerOT =0;
-			
-			//check if we already had file opened - no point reopening
 			checkerOT = checkForFile("ot.xml.txt");
 			
 			if(checkerOT == 1){
-				//if so then just select tab
 				openTabWithName("ot.xml.txt");
-				
 			} else {
 			
-			//add this tab to our tablist
 			tabList.add(new Tab(tabCounter, name, name));
-			
-			//now we read contents of file into a new jtextpane
-			//for testing purposes the file is too large to be read so I have included a snippet of the original in place
 			File filetoread = new File("ot.xml.txt");
-			
-		    
 			readAFile(filetoread);      
-			    
-			
 			} 
 			
 			break;
 			
-			case "bom.xml.txt":
+		case "bom.xml.txt":
+			
+			int checkerBOM =0;
 				
+			checkerBOM = checkForFile("bom.xml.txt");
 				
-				System.out.println("Open BOOK OF MORMON");
+			if(checkerBOM == 1){
+				openTabWithName("bom.xml.txt");
+			} else {
 				
-				int checkerBOM =0;
+			tabList.add(new Tab(tabCounter, name, name));
+			File filetoread = new File("bom.xml.txt");
+			readAFile(filetoread);  
+			} 
 				
-				//check if we already had file opened - no point reopening
-				checkerBOM = checkForFile("bom.xml.txt");
-				
-				if(checkerBOM == 1){
-					//if so then just select tab
-					openTabWithName("bom.xml.txt");
-					
-				} else {
-				
-				//add this tab to our tablist
-				tabList.add(new Tab(tabCounter, name, name));
-				
-				//now we read contents of file into a new jtextpane
-				//for testing purposes the file is too large to be read so I have included a snippet of the original in place
-				File filetoread = new File("bom.xml.txt");
-				
-			    
-				readAFile(filetoread);      
-				    
-				
-				} 
-				
-				break;
+			break;
 		}
-		
-		
- 
-        } 
+       } 
 		
 	
 
@@ -361,28 +289,30 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		
 	}
 	
+	/**
+	 * 
+	 * @param filetoread
+	 */
 	private void readAFile(File filetoread){
 		 if ( filetoread.canRead() )                                     
          {
             try
             {
-               // Read the contents of the file into a byte[]
-             // object.
-               FileInputStream input_file =
-                 new FileInputStream(filetoread);
+               
+               FileInputStream input_file = 
+                 new FileInputStream(filetoread); // Read the contents of the file into a byte[] object.
                byte[] file_data = new byte[(int) filetoread.length()];
                input_file.read(file_data);                         
  
-               // Create a text area to hold the contents of the
-               // file.
-               JTextArea text_area = new JTextArea();              
+               
+               JTextArea text_area = new JTextArea(); // Create a text area to hold the contents of the file.          
                text_area.setEditable(false);
                text_area.insert(new String(file_data), 0);
    
-               // Create a scroll pane to hold the text area; add
-               // it to the tabbed pane with all the other
-               // previously loaded scroll panes; and make the new
-             // scroll pane the selected component.
+               /* Create a scroll pane to hold the text area; add it to the tabbed pane with all the other
+             	previously loaded scroll panes; and make the new
+             	scroll pane the selected component. */
+               
                JScrollPane text_comp = new JScrollPane(text_area); 
                guiobject.returnTabViewer().add(text_comp, filetoread.getName());
                guiobject.returnTabViewer().setSelectedComponent(text_comp);
@@ -394,7 +324,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
                JOptionPane.showMessageDialog(
                   null,
                   "Cannot find '" + filetoread.getAbsolutePath() + "'",
-                  "Read Error", JOptionPane.ERROR_MESSAGE
+                  "Read Error", JOptionPane.ERROR_MESSAGE //error message for when we can't find the file
              );
             }
             catch (java.io.IOException ex)
@@ -403,7 +333,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
                 null,
                   "Error reading from '" + filetoread.getAbsolutePath() +
                      "':" + ex.getMessage(),
-                  "Read Error", JOptionPane.ERROR_MESSAGE
+                  "Read Error", JOptionPane.ERROR_MESSAGE //error message for when system is unable to read file
                );
           }
          }
@@ -413,12 +343,22 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
              null,
                "Cannot read from file '" +
                   filetoread.getAbsolutePath() + "'",
-               "Read Error", JOptionPane.ERROR_MESSAGE
+               "Read Error", JOptionPane.ERROR_MESSAGE //general error message if error occurs but is not caught by above two exceptions
             );
        }
       
 	}
 	
+	/**
+	 * A small internal method just to check for the existence of an opened file
+	 * Aka, has this file already been opened.
+	 * It'll loop through our tabList which holds all newly created tabs
+	 * and checks each's title to see if it matches the filename.
+	 * The title of the tab is the filename
+	 * The title of the tab is also the query (labeled as such for easier remembering)
+	 * @param filename - the name of the file
+	 * @return the value of existencechecker as an integer. 1 = existence found
+	 */
 	private int checkForFile(String filename){
 		
 		existencechecker=0;
@@ -426,22 +366,20 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 		for (int i=0; i<tabList.size();i++){
 			if(tabList.get(i).getTitle().equals(filename)){
 				existencechecker=1;
-				System.out.println("ALREADY EXISTS");
-				
-		} else {
-			System.out.println("DOES NOT EXIST YET");
+			}
 		}
-		}
-		
 		return existencechecker;
 	}
 	
+	/**
+	 * Opens tab with given name
+	 * Open = select. 
+	 * This method will change the currently selected tab to one with the name given.
+	 * @param name
+	 */
 	private void openTabWithName(String name){
 	
-	
-		System.out.println("existence: " + existencechecker);
 		int pnumber = guiobject.returnIndexOfTabWithTitle(name);
-		System.out.println("Tab no: " + pnumber);
 		guiobject.setCurrentSelection(pnumber);
 	}
 	
