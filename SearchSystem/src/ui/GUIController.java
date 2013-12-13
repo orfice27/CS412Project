@@ -19,6 +19,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -78,8 +80,28 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 				    "Numbers are not accepted. Try again.",
 				    "Invalid query",
 				    JOptionPane.ERROR_MESSAGE); //otherwise display an error dialogue
-			} else {
 				
+			} else if (isAlpha(guiobject.getTxtpnSearchGui())==false){ //check to see if query contains at least a letter (religious terms may use -)
+				
+				JFrame frame = guiobject.getFrame();
+				JOptionPane.showMessageDialog(frame,
+				    "Please enter a query with letters.",
+				    "Invalid query",
+				    JOptionPane.ERROR_MESSAGE); //otherwise display an error dialogue
+				
+			} else if(containsPunct(guiobject.getTxtpnSearchGui()) == true) { //check for punctuation
+				
+				
+				if (containsValidPunctuation(guiobject.getTxtpnSearchGui()) == false){ //then check for dodgy punctuation
+				
+				JFrame frame = guiobject.getFrame();
+				JOptionPane.showMessageDialog(frame,
+					"Please enter a sensible query.",
+					"Invalid query",
+					JOptionPane.ERROR_MESSAGE); //otherwise display an error dialogue
+					
+			} 
+			}else {
 			
 			String query = guiobject.getTxtpnSearchGui(); //query has passed our checks to extract query from the text field
 			
@@ -99,7 +121,6 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			
 			
 			if(results.isEmpty()){ //check to see if any results were returned for the query
-				System.out.println("empty results");
 				JFrame frame = guiobject.getFrame();
 				JOptionPane.showMessageDialog(frame,
 					    "No results were found"); //return a message if there were no results found
@@ -120,6 +141,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			}
 			
 			}
+			
 			tabCounter++; //keeps a counter of the number of tabs created so far
 			
 			break;
@@ -148,6 +170,53 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	    }
 
 	    return containsDigit;
+	}
+	
+	/**
+	 * Just to see if string contains any letters
+	 * @param str -string to be checked
+	 * @return true if it contains a letter else false
+	 */
+	private boolean isAlpha(String str) {
+	    char[] chars = str.toCharArray();
+
+	    for (char c :chars) {
+	        if(Character.isLetter(c)) {
+	            return true;
+	        }
+	    }
+
+	    return false;
+	}
+	
+	/**
+	 * Because religious documents may have - or ' in their names
+	 * the system should accept these as proper queries
+	 * @param str - the string to be checked
+	 * @return true if characters are valid else false
+	 */
+	private boolean containsValidPunctuation(String str){
+		char [] chars = str.toCharArray();
+		
+		for (char c :chars) {
+	        if((c=='-') || (c=='\'')) {
+	            return true;
+	        }
+	    }
+
+	    return false;
+		
+	}
+	
+	/**
+	 * 
+	 */
+	
+	private boolean containsPunct(String s){
+		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(s);
+		boolean b = m.find();
+		return b;
 	}
 
 	/**
