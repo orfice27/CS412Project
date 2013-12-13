@@ -1,4 +1,4 @@
-package searcher;
+package model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,7 +10,7 @@ import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.TextField;
 
-public class SearcherDocument {
+public class SearchDocument {
 
 	public static final String FIELD_FILENAME = "filename";
 	public static final String FIELD_CONTENT  = "content";
@@ -19,7 +19,7 @@ public class SearcherDocument {
 	private File file;
 	private Document document;
 
-	public SearcherDocument(File file) {
+	public SearchDocument(File file) {
 		this.file = file;
 		this.document = new Document();
 		this.fileToDocument();
@@ -34,10 +34,10 @@ public class SearcherDocument {
 	}
 
 	private void fileToDocument() {
-		document.add(new Field(SearcherDocument.FIELD_FILENAME, file.getAbsolutePath(), StoredField.TYPE));
+		document.add(new Field(SearchDocument.FIELD_FILENAME, file.getAbsolutePath(), StoredField.TYPE));
 
 		String content = this.fileToString();
-		document.add(new Field(SearcherDocument.FIELD_CONTENT, content, TextField.TYPE_STORED));
+		document.add(new Field(SearchDocument.FIELD_CONTENT, content, TextField.TYPE_STORED));
 
 		FieldType type = new FieldType();
 		type.setIndexed(true);
@@ -46,7 +46,7 @@ public class SearcherDocument {
 		type.setStoreTermVectorOffsets(true);
 		type.setStoreTermVectorPayloads(true);
 		type.setStoreTermVectorPositions(true);
-		document.add(new Field(SearcherDocument.FIELD_CONTENT_TV, content, type));
+		document.add(new Field(SearchDocument.FIELD_CONTENT_TV, content, type));
 	}
 
 	private String fileToString() {
