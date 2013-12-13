@@ -4,7 +4,8 @@ import java.io.IOException;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 
-import searcher.Searcher;
+import controller.Searcher;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

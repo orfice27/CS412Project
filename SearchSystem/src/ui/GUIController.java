@@ -35,7 +35,7 @@ import model.SearchResult;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
-import searcher.Searcher;
+import controller.Searcher;
 
 public class GUIController implements ActionListener, ChangeListener, MouseListener{
 

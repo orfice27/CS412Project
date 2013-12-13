@@ -6,9 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-import searcher.Searcher;
+import controller.Searcher;
 import searcher.XMLSearcher;
-
 import xmlParser.FileFinder;
 
 public class TagSearcher {
