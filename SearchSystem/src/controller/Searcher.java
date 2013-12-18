@@ -64,7 +64,6 @@ public class Searcher {
 	 * Inspects an index of documents given a users query.
 	 * @throws IOException
 	 * @throws ParseException
-	 * @throws InvalidTokenOffsetsException 
 	 */
 	public List<SearchResult> query(String queryString) throws IOException, ParseException {
 		DirectoryReader ireader = DirectoryReader.open(this.directory);
@@ -80,7 +79,6 @@ public class Searcher {
 	/**
 	 * Sorts the search results of a user query by scoring them in terms of appropriateness to the user query
 	 * @throws IOException
-	 * @throws InvalidTokenOffsetsException 
 	 */
 	private List<SearchResult> handleResults(Query query, TopDocs topDocs) throws IOException {
 		List<SearchResult> searchResults = new ArrayList<SearchResult>();
