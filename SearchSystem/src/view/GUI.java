@@ -1,8 +1,6 @@
 package view;
 
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Point;
@@ -16,36 +14,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import model.SearchResult;
-
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JButton;
-import javax.swing.JScrollBar;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
-import javax.swing.text.Highlighter;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 import javax.swing.text.Utilities;
-import javax.swing.JComponent;
-import javax.swing.JTabbedPane;
 
+import model.SearchResult;
 import controller.GUIController;
 
 
@@ -63,14 +51,7 @@ public class GUI {
 	private JTextPane tabPane;
 	private JTabbedPane tabViewer;
 	ArrayList<String> words;
-	
-	JTextArea resultDisplayArea;
 	String highlighterm;
-	
-    // An instance of the subclass of the default highlight painter
-    MyHighlightPainter myHighlightPainter = new MyHighlightPainter(Color.yellow);
-    
-    
 
 	/**
 	 * Launch the application.
@@ -264,143 +245,19 @@ public class GUI {
 	 * <highlight> tags are located and extract the terms referenced to be highlighted 
 	 * in yellow. It then removes the <highlight> tags from the GUI display but
 	 * keeps them in the original string from the results file.
-	 * @param r - the list of searchresults to be displayed on the GUI
+	 * @param results - the list of searchresults to be displayed on the GUI
 	 */
-	
-	public JTextArea printResults(ArrayList<SearchResult> r){
-		
-		
-		resultDisplayArea = new JTextArea();
-		resultDisplayArea.setText("");
-		
-		for(SearchResult s: r){
-			resultDisplayArea.append("Results Found in "+s.getFileName()+" at "+s.getFilePath());
-			resultDisplayArea.append("\n-----------------------------------------------------\n\n");
-			
-			
-			//we loop through the results
-			for(String str : s.getResults()){
-				
-				/*str contains the FULL string obtained from results
-				 * this means it includes the <highlight> tags
-				 * we need to extract everything BUT the highlight tags 
-				 * then reformat this for GUI display
-				 */
-				
-				highlighterm =""; //resetting the highlighterm variable so we don't get the last one we used for highlighting!
-				String firstpart; //first part of the string (everything before the highlight tag)
-				String secondpart; //second part of the string (everything after the highlight tag)
-				
-				//tokenize the line so we get individual "words"
-				StringTokenizer st = new StringTokenizer(str);
-
-				//for every token
-				while (st.hasMoreTokens()) {
-				//we extract the word
-				String word = st.nextToken();
-				
-				
-				//check if HIGHLIGHT exists within the word
-				if(word.contains("highlight")){
-					
-					
-					//if it does we extract the location of the > and / characters
-					//these symbols represent the end of the start tag and the end of the end tag
-					//<highlight>WORD</highlight>
-					int startindex = word.indexOf('>');
-					int endindex = word.indexOf('/');
-					
-					
-					startindex = startindex+1; //we extract one place after the > start tag
-					endindex = endindex-1; //and one place before the / end tag
-					
-					highlighterm = word.substring(startindex, endindex); //this creates the term to be highlighted
-					
-					highlight(resultDisplayArea, highlighterm); //this highlights the term
-				}
-				}
-				
-				/*
-				 * Because our parsed religious texts still have some strange tags included,
-				 * using a search on the > and / characters will end up removing/highlighting
-				 * terms that are NOT supposed to be highlighted.
-				 * The following section of code fixes this by recreating the string that
-				 * is to be displayed on the GUI.
-				 */
-				
-				
-				int tagstart = str.indexOf("<highlight"); //returns the position of the < in this string
-				int tagend = str.indexOf("/highlight>"); //returns the position of the / in this string
-				
-				
-				firstpart= str.substring(0,tagstart); //first part of the string is from the start (0) until the < start
-				secondpart=str.substring(tagend+11,str.length()); //second part of the string is +11 from tagend (/) until the end of the string
-				
-				
-				String finalstring = firstpart + highlighterm +secondpart; //join all three parts to get the final string
-			
-				resultDisplayArea.append(finalstring+"\n"); //then display this string on the GUI
-//				resultDisplayArea.append(str +"\n"); //this returns the ORIGINAL string (without the tag removal)
-				
-			}
-			}
-		return resultDisplayArea;
+	public JPanel getResultsPanel(List<SearchResult> results) {
+		JPanel resultDisplayArea = new JPanel();
+		resultDisplayArea.setLayout(new BoxLayout(resultDisplayArea, BoxLayout.PAGE_AXIS));
+		JLabel resultLabel;
+		for (SearchResult result : results) {
+			resultLabel = new SearchResultLabel(result);
+			resultDisplayArea.add(resultLabel);
 		}
-	
-	/**
-	 * @return the display area object for the results
-	 */
-	
-	public JTextArea returnDisplay(){
 		return resultDisplayArea;
 	}
-	
-	/**
-	 * Sample obtained from: http://stackoverflow.com/questions/5674128/jtextpane-highlight-text
-	 * This highlights the string pattern specified within a TextComponent
-	 * @param textComp - the text component
-	 * @param pattern - the string pattern to be highlighted
-	 */
-	// Creates highlights around all occurrences of pattern in textComp
-	public void highlight(JTextComponent textComp, String pattern) {
-		
-		// First remove all old highlights
-	    removeHighlights(textComp);
 
-	try {
-	    Highlighter hilite = textComp.getHighlighter();
-	    Document doc = textComp.getDocument();
-	    String text = doc.getText(0, doc.getLength());
-	    int pos = 0;
-
-	    // Search for pattern
-	    // see I have updated now its not case sensitive 
-	    while ((pos = text.toUpperCase().indexOf(pattern.toUpperCase(), pos)) >= 0) {
-	        // Create highlighter using private painter and apply around pattern
-	        hilite.addHighlight(pos, pos+pattern.length(), myHighlightPainter);
-	        pos += pattern.length();
-	    }
-	} catch (BadLocationException e) {
-	}
-	}
-	
-	/**
-	 * Sample obtained from: http://stackoverflow.com/questions/5674128/jtextpane-highlight-text
-	 * This removes old highlights to avoid conflicts when rehighlighting a new set of results
-	 * @param textComp - the text component to remove highlighting from
-	 */
-	
-	public void removeHighlights(JTextComponent textComp) {
-	    Highlighter hilite = textComp.getHighlighter();
-	    Highlighter.Highlight[] hilites = hilite.getHighlights();
-	    for (int i=0; i<hilites.length; i++) {
-	    	if (hilites[i].getPainter() instanceof MyHighlightPainter) {
-	        hilite.removeHighlight(hilites[i]);
-	    	}	
-	    }
-	}
-	
-	
 	/**
 	 * Sets the text of the left text pane, the tab pane
 	 * @param s Search Result to be added to the pane.
@@ -551,15 +408,5 @@ public class GUI {
 		}
 		return text;
 	}
-	
-	
-	
-	// A private subclass of the default highlight painter
-	class MyHighlightPainter extends DefaultHighlighter.DefaultHighlightPainter {
-	    public MyHighlightPainter(Color color) {
-	        super(color);
-	    }
-	}
-	
 
 }

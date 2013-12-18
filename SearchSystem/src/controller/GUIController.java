@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,11 +36,10 @@ import view.Tab;
 public class GUIController implements ActionListener, ChangeListener, MouseListener{
 
 	private int tabCounter;
-	private int index;
 	private GUI guiobject;
 	private ArrayList<SearchResult> results;
-	private ArrayList<String> searchTerms;
-	private ArrayList<Tab> tabList;
+	private List<String> searchTerms;
+	private List<Tab> tabList;
 	private ArrayList<String> documents;
 	private int existencechecker;
 	private Searcher searcher;
@@ -135,7 +135,7 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 			//guiobject.printResults(tabList.get(tabList.size() - 1).getResults()); //this displays results to right pane
 			
 			
-			guiobject.insertNewTab(query, guiobject.printResults(results),0); //inserts a new tab with the query and results
+			guiobject.insertNewTab(query, guiobject.getResultsPanel(results),0); //inserts a new tab with the query and results
 			guiobject.setCurrentSelection(0); //forces selection to 0 so that newest query is always the current tab
 			}
 			
