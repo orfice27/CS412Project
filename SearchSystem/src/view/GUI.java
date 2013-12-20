@@ -18,7 +18,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -248,14 +247,14 @@ public class GUI {
 	 * @param results - the list of searchresults to be displayed on the GUI
 	 */
 	public JPanel getResultsPanel(List<SearchResult> results) {
-		JPanel resultDisplayArea = new JPanel();
-		resultDisplayArea.setLayout(new BoxLayout(resultDisplayArea, BoxLayout.PAGE_AXIS));
-		JLabel resultLabel;
+		JPanel resultsPanel = new JPanel();
+		resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.PAGE_AXIS));
+		JComponent searchResultView;
 		for (SearchResult result : results) {
-			resultLabel = new SearchResultLabel(result);
-			resultDisplayArea.add(resultLabel);
+			searchResultView = new SearchResultView(result);
+			resultsPanel.add(searchResultView);
 		}
-		return resultDisplayArea;
+		return resultsPanel;
 	}
 
 	/**
