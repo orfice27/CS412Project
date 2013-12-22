@@ -251,7 +251,7 @@ public class GUI {
 		resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.PAGE_AXIS));
 		JComponent searchResultView;
 		for (SearchResult result : results) {
-			searchResultView = new SearchResultView(result);
+			searchResultView = new SearchResultView(result,this, controller);
 			resultsPanel.add(searchResultView);
 		}
 		return resultsPanel;

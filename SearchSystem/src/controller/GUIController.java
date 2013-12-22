@@ -255,8 +255,14 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 	}
+	
+	/**
+	 * Read the file specified
+	 * --NOW MODIFIED TO PUBLIC FOR ACCESS IN SEARCHRESULTCONTROLLER
+	 * @param file - file to be read
+	 */
 
-	private void readFile(File file) {
+	public void readFile(File file) {
 		if (file.canRead()) {
 			try {
 				FileInputStream input_file = new FileInputStream(file); // Read the contents of the file into a byte[] object.
@@ -303,10 +309,11 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	 * and checks each's title to see if it matches the filename.
 	 * The title of the tab is the filename
 	 * The title of the tab is also the query (labeled as such for easier remembering)
+	 * --NOW MODIFIED TO PUBLIC FOR ACCESS IN SEARCHRESULTCONTROLLER
 	 * @param filename - the name of the file
 	 * @return the value of existencechecker as an integer. 1 = existence found
 	 */
-	private boolean checkForFile(String filename) {
+	public boolean checkForFile(String filename) {
 		for (Tab tab : tabList) {
 			if (tab.getTitle().equals(filename)) {
 				return true;
@@ -324,6 +331,14 @@ public class GUIController implements ActionListener, ChangeListener, MouseListe
 	private void openTabWithName(String name) {
 		int pnumber = view.returnIndexOfTabWithTitle(name);
 		view.setCurrentSelection(pnumber);
+	}
+	
+	public List<Tab> returnTabList(){
+		return tabList;
+	}
+	
+	public int returnTabCounter(){
+		return tabCounter;
 	}
 
 }
