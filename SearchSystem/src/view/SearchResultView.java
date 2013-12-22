@@ -11,9 +11,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import model.SearchResult;
 import controller.GUIController;
 import controller.SearchResultController;
-import model.SearchResult;
 
 public class SearchResultView extends JPanel {
 
@@ -33,8 +33,8 @@ public class SearchResultView extends JPanel {
 	private JButton filePathView;
 	private List<JButton> resultsView;
 	private SearchResultController controller;
-	GUI view;
-	GUIController control;
+	private GUI view;
+	private GUIController control;
 
 	public SearchResultView(SearchResult searchResult, GUI view, GUIController control) {
 		this.view = view;
@@ -42,7 +42,7 @@ public class SearchResultView extends JPanel {
 		this.control = control;
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBorder(new EmptyBorder(5, 10, 5, 10));
-		controller = new SearchResultController(searchResult, view,control);
+		controller = new SearchResultController(searchResult, view, control);
 		createFileName();
 		createFilePath();
 		createResults();
