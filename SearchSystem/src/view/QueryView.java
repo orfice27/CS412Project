@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class SearchQueryView extends JPanel {
+public class QueryView extends JPanel {
 
 	private static final long serialVersionUID = -8381053061395185964L;
 
@@ -17,7 +17,7 @@ public class SearchQueryView extends JPanel {
 	private AutoCompleteTextField inputField;
 	private JButton submitButton;
 
-	public SearchQueryView() {
+	public QueryView() {
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		setOpaque(true);
 		createInputField();

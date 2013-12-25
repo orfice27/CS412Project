@@ -1,6 +1,6 @@
 import java.awt.EventQueue;
 
-import view.SearchSystemView;
+import view.SystemView;
 
 public class Driver {
 
@@ -8,7 +8,7 @@ public class Driver {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					SearchSystemView view = new SearchSystemView();
+					SystemView view = new SystemView();
 					view.setVisible(true);
 				} catch (Exception e) {
 					System.err.printf("Error running search system%n");

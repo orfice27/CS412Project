@@ -3,15 +3,15 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import model.SearchResult;
-import view.SearchResultView;
+import model.Result;
+import view.ResultView;
 
-public class SearchResultController {
+public class ResultController {
 
-	private SearchResult model;
-	private SearchSystemController parentController;
+	private Result model;
+	private SystemController parentController;
 
-	public SearchResultController(SearchResultView view, SearchResult model, SearchSystemController parentController) {
+	public ResultController(ResultView view, Result model, SystemController parentController) {
 		this.model = model;
 		this.parentController = parentController;
 		view.addOpenFileListener(new OpenFileListener());

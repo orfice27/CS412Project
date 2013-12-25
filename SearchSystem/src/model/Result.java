@@ -3,13 +3,13 @@ package model;
 import java.io.File;
 import java.util.List;
 
-public class SearchResult {
+public class Result {
 
 	private int position;
 	private String filePath;
 	private List<String> results;
 
-	public SearchResult(int position, String filePath, List<String> results) {
+	public Result(int position, String filePath, List<String> results) {
 		this.position = position;
 		this.filePath = filePath;
 		this.results = results;

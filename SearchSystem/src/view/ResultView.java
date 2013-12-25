@@ -12,9 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import model.SearchResult;
+import model.Result;
 
-public class SearchResultView extends JPanel {
+public class ResultView extends JPanel {
 
 	private static final long serialVersionUID = 8564824276005076581L;
 
@@ -30,10 +30,10 @@ public class SearchResultView extends JPanel {
 	private JButton fileNameView;
 	private JButton filePathView;
 	private List<JButton> resultsViews;
-	private SearchResult searchResult;
+	private Result result;
 
-	public SearchResultView(SearchResult searchResult) {
-		this.searchResult = searchResult;
+	public ResultView(Result result) {
+		this.result = result;
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBorder(new EmptyBorder(5, 10, 5, 10));
 		createFileName();
@@ -42,7 +42,7 @@ public class SearchResultView extends JPanel {
 	}
 
 	private void createFileName() {
-		String fileName = searchResult.getFileName();
+		String fileName = result.getFileName();
 		fileNameView = new JButton();
 		commomButton(fileNameView);
 		fileNameView.setText(String.format(TEMPLATE_FILENAME, fileName));
@@ -51,8 +51,8 @@ public class SearchResultView extends JPanel {
 	}
 
 	private void createFilePath() {
-		String fileName = searchResult.getFileName();
-		String filePath = searchResult.getFileDirectory();
+		String fileName = result.getFileName();
+		String filePath = result.getFileDirectory();
 		filePathView = new JButton();
 		commomButton(filePathView);
 		filePathView.setText(String.format(TEMPLATE_FILEPATH, filePath));
@@ -61,8 +61,8 @@ public class SearchResultView extends JPanel {
 	}
 
 	private void createResults() {
-		String fileName = searchResult.getFileName();
-		List<String> results = searchResult.getResults();
+		String fileName = result.getFileName();
+		List<String> results = result.getResults();
 		resultsViews = new ArrayList<JButton>();
 		String result;
 		JButton resultView;

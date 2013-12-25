@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.SearchDocument;
-import model.SearchResult;
+import model.Result;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -96,12 +96,12 @@ public class Searcher {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public List<SearchResult> query(String queryString) throws IOException, ParseException {
+	public List<Result> query(String queryString) throws IOException, ParseException {
 		DirectoryReader ireader = DirectoryReader.open(this.directory);
 		this.isearcher = new IndexSearcher(ireader);
 		QueryParser parser = new QueryParser(Searcher.LUCENE_VERSION, SearchDocument.FIELD_CONTENT, this.analyzer);
 		Query query = parser.parse(queryString);
-		List<SearchResult> searchResults = this.handleResults(query, this.isearcher.search(query, null, 1000));
+		List<Result> searchResults = this.handleResults(query, this.isearcher.search(query, null, 1000));
 		ireader.close();
 //		this.directory.close();
 		return searchResults;
@@ -111,8 +111,8 @@ public class Searcher {
 	 * Sorts the search results of a user query by scoring them in terms of appropriateness to the user query
 	 * @throws IOException
 	 */
-	private List<SearchResult> handleResults(Query query, TopDocs topDocs) throws IOException {
-		List<SearchResult> searchResults = new ArrayList<SearchResult>();
+	private List<Result> handleResults(Query query, TopDocs topDocs) throws IOException {
+		List<Result> searchResults = new ArrayList<Result>();
 		SimpleHTMLFormatter htmlFormatter = new SimpleHTMLFormatter("<highlight>", "</highlight>");
 		Highlighter highlighter = new Highlighter(htmlFormatter, new QueryScorer(query));
 
@@ -120,7 +120,7 @@ public class Searcher {
 		int id;
 		Document doc;
 		TokenStream tokenStream;
-		SearchResult result;
+		Result result;
 		List<String> results;
 
 		for (int i = 0; i < hits.length; i++) {
@@ -137,7 +137,7 @@ public class Searcher {
 			} catch (InvalidTokenOffsetsException e) {
 				System.err.printf("Invalid token offsets: %s\n", e.getMessage());
 			}
-			result = new SearchResult(i + 1, doc.get(SearchDocument.FIELD_FILENAME), results);
+			result = new Result(i + 1, doc.get(SearchDocument.FIELD_FILENAME), results);
 			searchResults.add(result);
 		}
 

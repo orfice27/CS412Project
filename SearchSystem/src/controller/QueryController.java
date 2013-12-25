@@ -12,22 +12,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import model.SearchResult;
+import model.Result;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 
-import view.SearchQueryView;
+import view.QueryView;
 
-public class SearchQueryController {
+public class QueryController {
 
 	private static final Path DICTIONARY = Paths.get("theologicaldictionary.txt.txt");
 	private static final Path INDEX_DIRECTORY = Paths.get("data set", "rel200");
 
-	private SearchQueryView view;
+	private QueryView view;
 	private Searcher searcher;
-	private SearchSystemController parentController;
+	private SystemController parentController;
 
-	public SearchQueryController(SearchQueryView view, SearchSystemController parentController) {
+	public QueryController(QueryView view, SystemController parentController) {
 		this.view = view;
 		this.parentController = parentController;
 		this.view.setAutoCompleteDictionary(getDictionary());
@@ -54,7 +54,7 @@ public class SearchQueryController {
 			} else if (queryString.isEmpty()) { // TODO remove isEmpty() replace with punctuation check
 				view.dialogQueryPuncutation();
 			} else {
-				List<SearchResult> results = new ArrayList<SearchResult>();
+				List<Result> results = new ArrayList<Result>();
 				try {
 					results = searcher.query(queryString);
 					parentController.addQuery(queryString);

@@ -6,20 +6,20 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import model.SearchResult;
-import controller.SearchResultController;
-import controller.SearchSystemController;
+import model.Result;
+import controller.ResultController;
+import controller.SystemController;
 
-public class SearchResultTab extends JScrollPane {
+public class ResultTab extends JScrollPane {
 
 	private static final long serialVersionUID = -7415080002662301890L;
 
-	private List<SearchResult> results;
+	private List<Result> results;
 	private String queryString;
 	private JPanel container;
-	private SearchSystemController parentController;
+	private SystemController parentController;
 
-	public SearchResultTab(String queryString, List<SearchResult> results, SearchSystemController parentController) {
+	public ResultTab(String queryString, List<Result> results, SystemController parentController) {
 		this.results = results;
 		this.queryString = queryString;
 		this.parentController = parentController;
@@ -34,11 +34,11 @@ public class SearchResultTab extends JScrollPane {
 	}
 
 	public void createResultsViews() {
-		SearchResultView searchResultView;
-		for (SearchResult searchResult : results) {
-			searchResultView = new SearchResultView(searchResult);
-			new SearchResultController(searchResultView, searchResult, parentController);
-			container.add(searchResultView);
+		ResultView resultView;
+		for (Result result : results) {
+			resultView = new ResultView(result);
+			new ResultController(resultView, result, parentController);
+			container.add(resultView);
 		}
 	}
 

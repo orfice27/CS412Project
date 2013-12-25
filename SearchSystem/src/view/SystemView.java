@@ -15,23 +15,23 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import controller.SearchQueryController;
-import controller.SearchSystemController;
+import controller.QueryController;
+import controller.SystemController;
 
-public class SearchSystemView extends JFrame {
+public class SystemView extends JFrame {
 
 	private static final long serialVersionUID = -6488174892752959409L;
 
 	private static final int FRAME_SIZE = 800;
 
-	private SearchQueryView searchQueryView;
+	private QueryView queryView;
 	private JTabbedPane tabPane;
 	private JMenuItem closeTabItem;
 	private JMenuItem clearHistoryItem;
 	private JMenuItem viewHistoryItem;
 
-	public SearchSystemView() {
-		SearchSystemController controller = new SearchSystemController(this);
+	public SystemView() {
+		SystemController controller = new SystemController(this);
 
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -46,9 +46,9 @@ public class SearchSystemView extends JFrame {
 		JPanel container = new JPanel();
 		container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
 
-		searchQueryView = new SearchQueryView();
-		new SearchQueryController(searchQueryView, controller);
-		container.add(searchQueryView, BorderLayout.PAGE_START);
+		queryView = new QueryView();
+		new QueryController(queryView, controller);
+		container.add(queryView, BorderLayout.PAGE_START);
 
 		tabPane = new JTabbedPane();
 		container.add(tabPane, BorderLayout.CENTER);
@@ -90,10 +90,10 @@ public class SearchSystemView extends JFrame {
 		return null;
 	}
 
-	public SearchResultTab getSearchResultTab(String queryString) {
+	public ResultTab getSearchResultTab(String queryString) {
 		for (Component componenet : tabPane.getComponents()) {
-			if (componenet instanceof SearchResultTab) {
-				SearchResultTab tab = (SearchResultTab) componenet;
+			if (componenet instanceof ResultTab) {
+				ResultTab tab = (ResultTab) componenet;
 				if (queryString.equals(tab.getQueryString())) {
 					return tab;
 				}

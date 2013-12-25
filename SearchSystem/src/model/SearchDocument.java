@@ -21,8 +21,8 @@ public class SearchDocument {
 
 	public SearchDocument(Path file) {
 		this.file = file;
-		this.document = new Document();
-		this.fileToDocument();
+		document = new Document();
+		fileToDocument();
 	}
 
 	public Document getDocument() {

@@ -11,19 +11,19 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import model.History;
-import model.SearchResult;
+import model.Result;
 import view.FileDisplayTab;
 import view.HistoryTab;
-import view.SearchResultTab;
-import view.SearchSystemView;
+import view.ResultTab;
+import view.SystemView;
 
-public class SearchSystemController {
+public class SystemController {
 
 	private static final Path HISTORY = Paths.get("history", "history.json");
 	private History history;
-	private SearchSystemView view;
+	private SystemView view;
 
-	public SearchSystemController(SearchSystemView view) {
+	public SystemController(SystemView view) {
 		this.view = view;
 		this.history = new History(HISTORY);
 	}
@@ -35,16 +35,16 @@ public class SearchSystemController {
 		view.addWindowListener(new WindowListener());
 	}
 
-	public void handleSearchResults(String queryString, List<SearchResult> results) {
-		SearchResultTab tab = view.getSearchResultTab(queryString);
+	public void handleSearchResults(String queryString, List<Result> results) {
+		ResultTab tab = view.getSearchResultTab(queryString);
 		if (tab == null) {
-			tab = new SearchResultTab(queryString, results, this);
+			tab = new ResultTab(queryString, results, this);
 			view.addTab(queryString, tab);
 		}
 		view.setSelectedTab(tab);
 	}
 
-	public void handleOpenFile(SearchResult result) {
+	public void handleOpenFile(Result result) {
 		String filepath = result.getFilePath();
 		FileDisplayTab tab = view.getOpenFileTab(filepath);
 		if (tab == null) {
