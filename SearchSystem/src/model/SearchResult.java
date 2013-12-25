@@ -23,11 +23,15 @@ public class SearchResult {
 		return position;
 	}
 
+	public final String getFilePath() {
+		return this.filePath;
+	}
+
 	public final String getFileName() {
 		return this.filePath.substring(this.filePath.lastIndexOf(File.separatorChar) + 1);
 	}
 
-	public final String getFilePath() {
+	public final String getFileDirectory() {
 		return this.filePath.substring(0, this.filePath.lastIndexOf(File.separatorChar));
 	}
 

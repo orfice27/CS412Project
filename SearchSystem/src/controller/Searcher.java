@@ -1,7 +1,14 @@
 package controller;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +38,10 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 
-import xmlParser.XMLParser;
-
 public class Searcher {
 
 	private static final Version LUCENE_VERSION = Version.LUCENE_46;
+	private static final String PARSED_DIRECTORY = "parsed";
 
 	private Directory directory;
 	private Analyzer analyzer;
@@ -48,16 +54,41 @@ public class Searcher {
 	 * Creates the initial index from the users given root file directory path.
 	 * @throws IOException  the given root may contain no documents.
 	 */
-	public void index(String root) throws IOException {
+	public void index(Path root) throws IOException {
 		this.directory = new RAMDirectory();
 		this.analyzer = new StandardAnalyzer(Searcher.LUCENE_VERSION);
 		IndexWriterConfig config = new IndexWriterConfig(Searcher.LUCENE_VERSION, analyzer);
 		IndexWriter iwriter = new IndexWriter(this.directory, config);
-		for (File file : new XMLParser(root).getParsedFiles()) {
+		for (Path file : parseFiles(root)) {
 			SearchDocument sDoc = new SearchDocument(file);
 			iwriter.addDocument(sDoc.getDocument());
 		}
 		iwriter.close();
+	}
+
+	private List<Path> parseFiles(final Path root) {
+		final List<Path> parsed = new ArrayList<Path>();
+		try {
+			Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					if (file.getFileName().toString().endsWith(".xml") && Files.isReadable(file)) {
+						Path parsedPath = FileSystems.getDefault().getPath(PARSED_DIRECTORY, file.toString().replaceFirst(root.toString(), ""));
+						try {
+							String parsedContents = new String(Files.readAllBytes(file)).replaceAll("\\<.*?\\>", "");
+							Files.createDirectories(parsedPath.getParent());
+							parsed.add(Files.write(parsedPath, parsedContents.getBytes(), StandardOpenOption.CREATE));
+						} catch (IOException e) {
+							System.err.printf("Error parsing file %s: %s%n", file, e.getMessage());
+						}
+					}
+					return FileVisitResult.CONTINUE;
+				}
+			});
+		} catch (IOException e) {
+			System.err.printf("Error parsing files: %s%n", e.getMessage());
+		}
+		return parsed;
 	}
 
 	/**
@@ -121,7 +152,7 @@ public class Searcher {
 		}
 
 		String queryString = args[0];
-		String fileOrDir = args[1];
+		Path fileOrDir = Paths.get(args[1]);
 
 		Searcher s = new Searcher();
 		try {

@@ -1,4 +1,5 @@
 package view;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -7,11 +8,9 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.plaf.basic.BasicComboBoxEditor;
 
 /**
  * A JTextField that will display a whole word as the user types a portion of
@@ -28,6 +27,7 @@ import javax.swing.plaf.basic.BasicComboBoxEditor;
  * @author Brandon Buck
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class AutoCompleteTextField extends JTextField implements KeyListener,
             DocumentListener {
     private ArrayList<String> possibilities;

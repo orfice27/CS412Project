@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,12 +13,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import model.SearchResult;
-import controller.GUIController;
-import controller.SearchResultController;
 
 public class SearchResultView extends JPanel {
 
-	private static final long serialVersionUID = 5711966432694795611L;
+	private static final long serialVersionUID = 8564824276005076581L;
 
 	private static final String TEMPLATE_FILENAME = "<html><span style='color: blue; text-decoration: underline; font-size: 16px;'>%s</span></html>";
 	private static final String TEMPLATE_FILEPATH = "<html><span style='color: green; font-size: 14px;'>%s</span></html>";
@@ -28,28 +27,18 @@ public class SearchResultView extends JPanel {
 	private static final String TOOLTIP_FILEPATH = "Open file '%s'";
 	private static final String TOOLTIP_RESULT = "Open result in file '%s'";
 
-	private SearchResult searchResult;
 	private JButton fileNameView;
 	private JButton filePathView;
-	private List<JButton> resultsView;
-	private SearchResultController controller;
-	private GUI view;
-	private GUIController control;
+	private List<JButton> resultsViews;
+	private SearchResult searchResult;
 
-	public SearchResultView(SearchResult searchResult, GUI view, GUIController control) {
-		this.view = view;
+	public SearchResultView(SearchResult searchResult) {
 		this.searchResult = searchResult;
-		this.control = control;
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBorder(new EmptyBorder(5, 10, 5, 10));
-		controller = new SearchResultController(searchResult, view, control);
 		createFileName();
 		createFilePath();
 		createResults();
-	}
-	
-	public GUI returnGUI(){
-		return view;
 	}
 
 	private void createFileName() {
@@ -63,7 +52,7 @@ public class SearchResultView extends JPanel {
 
 	private void createFilePath() {
 		String fileName = searchResult.getFileName();
-		String filePath = searchResult.getFilePath();
+		String filePath = searchResult.getFileDirectory();
 		filePathView = new JButton();
 		commomButton(filePathView);
 		filePathView.setText(String.format(TEMPLATE_FILEPATH, filePath));
@@ -74,7 +63,7 @@ public class SearchResultView extends JPanel {
 	private void createResults() {
 		String fileName = searchResult.getFileName();
 		List<String> results = searchResult.getResults();
-		resultsView = new ArrayList<JButton>();
+		resultsViews = new ArrayList<JButton>();
 		String result;
 		JButton resultView;
 		for (int i = 0; i < results.size(); i++) {
@@ -86,7 +75,7 @@ public class SearchResultView extends JPanel {
 			resultView.setText(String.format(TEMPLATE_RESULT, i + 1, result));
 			resultView.setToolTipText(String.format(TOOLTIP_RESULT, fileName));
 			resultView.setMargin(new Insets(0,30,0,0));
-			resultsView.add(resultView);
+			resultsViews.add(resultView);
 			add(resultView);
 		}
 	}
@@ -97,8 +86,14 @@ public class SearchResultView extends JPanel {
 		button.setBorderPainted(false);
 		button.setOpaque(false);
 		button.setBackground(Color.WHITE);
-		button.addActionListener(controller);
-		button.setActionCommand("opentext");
+	}
+
+	public void addOpenFileListener(ActionListener listener) {
+		fileNameView.addActionListener(listener);
+		filePathView.addActionListener(listener);
+		for (JButton resultsView : resultsViews) {
+			resultsView.addActionListener(listener);
+		}
 	}
 
 }

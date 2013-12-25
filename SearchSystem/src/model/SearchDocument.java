@@ -1,8 +1,8 @@
 package model;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -16,17 +16,13 @@ public class SearchDocument {
 	public static final String FIELD_CONTENT  = "content";
 	public static final String FIELD_CONTENT_TV = "content_tv";
 
-	private File file;
+	private Path file;
 	private Document document;
 
-	public SearchDocument(File file) {
+	public SearchDocument(Path file) {
 		this.file = file;
 		this.document = new Document();
 		this.fileToDocument();
-	}
-
-	public File getFile() {
-		return file;
 	}
 
 	public Document getDocument() {
@@ -34,7 +30,7 @@ public class SearchDocument {
 	}
 
 	private void fileToDocument() {
-		document.add(new Field(SearchDocument.FIELD_FILENAME, file.getAbsolutePath(), StoredField.TYPE));
+		document.add(new Field(SearchDocument.FIELD_FILENAME, file.toAbsolutePath().toString(), StoredField.TYPE));
 
 		String content = this.fileToString();
 		document.add(new Field(SearchDocument.FIELD_CONTENT, content, TextField.TYPE_STORED));
@@ -50,13 +46,13 @@ public class SearchDocument {
 	}
 
 	private String fileToString() {
-		String content = "";
+		byte[] bytes = null;
 		try {
-			content = new Scanner(new File(file.getAbsolutePath())).useDelimiter("\\Z").next();
-		} catch (FileNotFoundException e) {
-			System.err.printf("Error reading file %s: %s\n", file.getName(), e.getMessage());
+			bytes = Files.readAllBytes(file);
+		} catch (IOException e) {
+			System.err.printf("Error reading file %s: %s\n", file.getFileName(), e.getMessage());
 		}
-		return content;
+		return new String(bytes);
 	}
 
 }
