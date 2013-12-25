@@ -11,7 +11,7 @@ public class Driver {
 					SearchSystemView view = new SearchSystemView();
 					view.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					System.err.printf("Error running search system%n");
 				}
 			}
 		});

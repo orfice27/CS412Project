@@ -57,6 +57,7 @@ public class SearchQueryController {
 				List<SearchResult> results = new ArrayList<SearchResult>();
 				try {
 					results = searcher.query(queryString);
+					parentController.addQuery(queryString);
 				} catch (IOException | ParseException ex) {
 					System.err.printf("Error searching index for '%s': %s%n", queryString, ex.getMessage());
 				}
