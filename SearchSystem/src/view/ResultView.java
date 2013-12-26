@@ -12,8 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import model.Result;
-
 public class ResultView extends JPanel {
 
 	private static final long serialVersionUID = 8564824276005076581L;
@@ -30,58 +28,46 @@ public class ResultView extends JPanel {
 	private JButton fileNameView;
 	private JButton filePathView;
 	private List<JButton> resultsViews;
-	private Result result;
 
-	public ResultView(Result result) {
-		this.result = result;
+	public ResultView() {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBorder(new EmptyBorder(5, 10, 5, 10));
-		createFileName();
-		createFilePath();
-		createResults();
-	}
 
-	private void createFileName() {
-		String fileName = result.getFileName();
 		fileNameView = new JButton();
 		commomButton(fileNameView);
-		fileNameView.setText(String.format(TEMPLATE_FILENAME, fileName));
-		fileNameView.setToolTipText(String.format(TOOLTIP_FILENAME, fileName));
 		add(fileNameView);
-	}
 
-	private void createFilePath() {
-		String fileName = result.getFileName();
-		String filePath = result.getFileDirectory();
 		filePathView = new JButton();
 		commomButton(filePathView);
-		filePathView.setText(String.format(TEMPLATE_FILEPATH, filePath));
-		filePathView.setToolTipText(String.format(TOOLTIP_FILEPATH, fileName));
 		add(filePathView);
+
+		resultsViews = new ArrayList<JButton>();
 	}
 
-	private void createResults() {
-		String fileName = result.getFileName();
-		List<String> results = result.getResults();
-		resultsViews = new ArrayList<JButton>();
-		String result;
-		JButton resultView;
-		for (int i = 0; i < results.size(); i++) {
-			result = results.get(i);
-			result = result.replace("<highlight>", TEMPLATE_HIGHLIGHT_START);
-			result = result.replace("</highlight>", TEMPLATE_HIGHLIGHT_END);
-			resultView = new JButton();
-			commomButton(resultView);
-			resultView.setText(String.format(TEMPLATE_RESULT, i + 1, result));
-			resultView.setToolTipText(String.format(TOOLTIP_RESULT, fileName));
-			resultView.setMargin(new Insets(0,30,0,0));
-			resultsViews.add(resultView);
-			add(resultView);
-		}
+	public void updateFileName(String fileName) {
+		fileNameView.setText(String.format(TEMPLATE_FILENAME, fileName));
+		fileNameView.setToolTipText(String.format(TOOLTIP_FILENAME, fileName));
+	}
+
+	public void updateFilePath(String fileName, String filePath) {
+		filePathView.setText(String.format(TEMPLATE_FILEPATH, filePath));
+		filePathView.setToolTipText(String.format(TOOLTIP_FILEPATH, fileName));
+	}
+
+	public void appendResult(String fileName, String result) {
+		JButton resultView = new JButton();
+		result = result.replace("<highlight>", TEMPLATE_HIGHLIGHT_START);
+		result = result.replace("</highlight>", TEMPLATE_HIGHLIGHT_END);
+		commomButton(resultView);
+		resultView.setText(String.format(TEMPLATE_RESULT, resultsViews.size() + 1, result));
+		resultView.setToolTipText(String.format(TOOLTIP_RESULT, fileName));
+		resultView.setMargin(new Insets(0, 30, 0, 0));
+		resultsViews.add(resultView);
+		add(resultView);
 	}
 
 	private void commomButton(JButton button) {
-		button.setMargin(new Insets(0,0,0,0));
+		button.setMargin(new Insets(0, 0, 0, 0));
 		button.setHorizontalAlignment(SwingConstants.LEFT);
 		button.setBorderPainted(false);
 		button.setOpaque(false);

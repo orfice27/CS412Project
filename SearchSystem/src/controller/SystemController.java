@@ -96,7 +96,7 @@ public class SystemController {
 		public void actionPerformed(ActionEvent e) {
 			HistoryTab tab = view.getOpenHistoryTab();
 			if (tab == null) {
-				tab = new HistoryTab(history);
+				tab = new HistoryTab();
 				new HistoryTabController(history, tab);
 				view.addTab("History", tab);
 			}

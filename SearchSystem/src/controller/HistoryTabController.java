@@ -16,7 +16,7 @@ public class HistoryTabController implements Observer {
 		this.model = model;
 		this.view = view;
 		for (HistoryEntry historyEntry : this.model.getQueries()) {
-			view.appendHistoryEntry(historyEntry);
+			view.appendHistoryEntry(historyEntry.getQuery(), historyEntry.getTime());
 		}
 		model.addObserver(this);
 	}
@@ -27,7 +27,7 @@ public class HistoryTabController implements Observer {
 			view.clearHistory();
 		} else {
 			HistoryEntry historyEntry = (HistoryEntry) arg;
-			view.appendHistoryEntry(historyEntry);
+			view.appendHistoryEntry(historyEntry.getQuery(), historyEntry.getTime());
 		}
 	}
 

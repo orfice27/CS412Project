@@ -1,12 +1,11 @@
 package view;
 
+import java.util.Date;
+
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-import model.History;
-import model.HistoryEntry;
 
 public class HistoryTab extends JScrollPane {
 
@@ -15,7 +14,7 @@ public class HistoryTab extends JScrollPane {
 	private JPanel container;
 	private JTextArea textArea;
 
-	public HistoryTab(History history) {
+	public HistoryTab() {
 		container = new JPanel();
 		container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
 
@@ -32,8 +31,8 @@ public class HistoryTab extends JScrollPane {
 		container.add(textArea);
 	}
 
-	public void appendHistoryEntry(HistoryEntry historyEntry) {
-		textArea.append(String.format("%s @ %s%n", historyEntry.getQuery(), historyEntry.getTime()));
+	public void appendHistoryEntry(String query, Date time) {
+		textArea.append(String.format("%s @ %s%n", query, time));
 	}
 
 	public void clearHistory() {

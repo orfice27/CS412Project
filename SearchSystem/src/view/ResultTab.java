@@ -36,7 +36,7 @@ public class ResultTab extends JScrollPane {
 	public void createResultsViews() {
 		ResultView resultView;
 		for (Result result : results) {
-			resultView = new ResultView(result);
+			resultView = new ResultView();
 			new ResultController(resultView, result, parentController);
 			container.add(resultView);
 		}
