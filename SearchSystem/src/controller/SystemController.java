@@ -38,7 +38,8 @@ public class SystemController {
 	public void handleSearchResults(String queryString, List<Result> results) {
 		ResultTab tab = view.getSearchResultTab(queryString);
 		if (tab == null) {
-			tab = new ResultTab(queryString, results, this);
+			tab = new ResultTab(queryString);
+			new ResultTabController(tab, results, this);
 			view.addTab(queryString, tab);
 		}
 		view.setSelectedTab(tab);
