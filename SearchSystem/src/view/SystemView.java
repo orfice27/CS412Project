@@ -18,6 +18,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import controller.QueryController;
 import controller.SystemController;
 
+/**
+ * Main application windows which initiates all its sub view
+ */
 public class SystemView extends JFrame {
 
 	private static final long serialVersionUID = -6488174892752959409L;

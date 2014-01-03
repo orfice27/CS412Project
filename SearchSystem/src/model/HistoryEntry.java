@@ -2,6 +2,10 @@ package model;
 
 import java.util.Date;
 
+/**
+ * Container for the query string and time stamp the query occurred
+ * 
+ */
 public class HistoryEntry implements Comparable<HistoryEntry> {
 
 	private String query;

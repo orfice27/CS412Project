@@ -6,6 +6,9 @@ import model.Result;
 import view.ResultTab;
 import view.ResultView;
 
+/**
+ * Manages a result tab and adds results views for each search result
+ */
 public class ResultTabController {
 
 	public ResultTabController(ResultTab view, List<Result> models, SystemController parentController) {

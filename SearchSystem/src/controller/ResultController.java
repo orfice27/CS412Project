@@ -6,6 +6,10 @@ import java.awt.event.ActionListener;
 import model.Result;
 import view.ResultView;
 
+/**
+ * Manages individual results. Creates listeners for opening files related to
+ * results
+ */
 public class ResultController {
 
 	private Result model;

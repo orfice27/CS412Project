@@ -18,6 +18,9 @@ import org.apache.lucene.queryparser.classic.ParseException;
 
 import view.QueryView;
 
+/**
+ * Manages the running of searches on the index
+ */
 public class QueryController {
 
 	private static final Path DICTIONARY = Paths.get("theologicaldictionary.txt.txt");

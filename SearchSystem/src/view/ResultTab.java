@@ -4,6 +4,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+/**
+ * Tab to display results of searching the index
+ */
 public class ResultTab extends JScrollPane {
 
 	private static final long serialVersionUID = -7415080002662301890L;

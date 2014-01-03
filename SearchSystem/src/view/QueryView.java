@@ -8,6 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/**
+ * Panel to allow user input of a query and initiation of search on the index
+ */
 public class QueryView extends JPanel {
 
 	private static final long serialVersionUID = -8381053061395185964L;

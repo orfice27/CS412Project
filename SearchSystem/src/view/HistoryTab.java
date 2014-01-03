@@ -7,6 +7,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+/**
+ * Tab for displaying query history
+ */
 public class HistoryTab extends JScrollPane {
 
 	private static final long serialVersionUID = 740032827501268132L;

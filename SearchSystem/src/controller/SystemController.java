@@ -17,6 +17,9 @@ import view.HistoryTab;
 import view.ResultTab;
 import view.SystemView;
 
+/**
+ * Manages which tabs are open and loading and saving of query history
+ */
 public class SystemController {
 
 	private static final Path HISTORY = Paths.get("history", "history.json");

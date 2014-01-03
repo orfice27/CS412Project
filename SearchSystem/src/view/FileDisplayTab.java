@@ -9,6 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+/**
+ * Tab for displaying a full file from the index
+ */
 public class FileDisplayTab extends JScrollPane {
 
 	private static final long serialVersionUID = -8170495304477233177L;

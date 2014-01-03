@@ -2,6 +2,9 @@ import java.awt.EventQueue;
 
 import view.SystemView;
 
+/**
+ * Launches the application
+ */
 public class Driver {
 
 	public static void main(String[] args) {

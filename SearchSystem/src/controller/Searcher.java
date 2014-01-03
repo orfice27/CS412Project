@@ -38,6 +38,9 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 
+/**
+ * Indexes the data set and allows for searching over it
+ */
 public class Searcher {
 
 	private static final Version LUCENE_VERSION = Version.LUCENE_46;
@@ -51,8 +54,12 @@ public class Searcher {
 	}
 
 	/**
-	 * Creates the initial index from the users given root file directory path.
-	 * @throws IOException  the given root may contain no documents.
+	 * Builds an index from the XML files in the given path.
+	 * 
+	 * @param root
+	 *            Path containing files to be indexed
+	 * @throws IOException
+	 *             exceptions writing to the index
 	 */
 	public void index(Path root) throws IOException {
 		this.directory = new RAMDirectory();
@@ -66,6 +73,15 @@ public class Searcher {
 		iwriter.close();
 	}
 
+	/**
+	 * Returns list of paths that contains the files from the root path after
+	 * being parsed
+	 * 
+	 * @param root
+	 *            Path containing files to be parsed
+	 * @return list of paths that contains the files from the root path after
+	 *         being parsed
+	 */
 	private List<Path> parseFiles(final Path root) {
 		final List<Path> parsed = new ArrayList<Path>();
 		try {
@@ -92,9 +108,16 @@ public class Searcher {
 	}
 
 	/**
-	 * Inspects an index of documents given a users query.
+	 * Queries the index for the specified queryStirng and return a list of
+	 * resulting matches
+	 * 
+	 * @param queryString
+	 *            string to search over the index
+	 * @return
 	 * @throws IOException
+	 *             reading from the index
 	 * @throws ParseException
+	 *             parsing the queryString
 	 */
 	public List<Result> query(String queryString) throws IOException, ParseException {
 		DirectoryReader ireader = DirectoryReader.open(this.directory);
@@ -108,8 +131,18 @@ public class Searcher {
 	}
 
 	/**
-	 * Sorts the search results of a user query by scoring them in terms of appropriateness to the user query
+	 * Processes the results from Lucene and returns list of {@link Result}s for
+	 * the in context matches found in the index
+	 * 
+	 * @param query
+	 *            {@link Query} for this search
+	 * @param topDocs
+	 *            {@link TopDocs} for this search
+	 * @return list of {@link Result}s for the in context matches found in the
+	 *         index
 	 * @throws IOException
+	 *             reading search results from index or highlighing context
+	 *             results
 	 */
 	private List<Result> handleResults(Query query, TopDocs topDocs) throws IOException {
 		List<Result> searchResults = new ArrayList<Result>();

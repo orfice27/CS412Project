@@ -12,6 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * Result view on a single file for a query
+ */
 public class ResultView extends JPanel {
 
 	private static final long serialVersionUID = 8564824276005076581L;

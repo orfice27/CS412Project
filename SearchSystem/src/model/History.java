@@ -14,6 +14,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+/**
+ * Manages a persistent store of history entries across application launchs
+ * 
+ */
 public class History extends Observable {
 
 	private static final String DATE_FORMAT = "Y/M/d H:m:s:S Z";

@@ -10,6 +10,11 @@ import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.TextField;
 
+/**
+ * Converts a file to a document that can be used with Lucene. Sets the file up
+ * to be used with the Lucene highlighter for contextual results and stores the
+ * filename but does not make it searchable.
+ */
 public class SearchDocument {
 
 	public static final String FIELD_FILENAME = "filename";

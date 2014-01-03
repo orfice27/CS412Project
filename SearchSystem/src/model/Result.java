@@ -3,6 +3,10 @@ package model;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Result from doing a search on the index. Contains the path to the file the
+ * result was found in and in context parts of the file with the match
+ */
 public class Result {
 
 	private int position;

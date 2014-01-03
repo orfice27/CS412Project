@@ -7,6 +7,9 @@ import model.History;
 import model.HistoryEntry;
 import view.HistoryTab;
 
+/**
+ * Manages history tab and updates when cleared or new queries entred
+ */
 public class HistoryTabController implements Observer {
 
 	private History model;
