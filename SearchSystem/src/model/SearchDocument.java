@@ -57,12 +57,14 @@ public class SearchDocument {
 	private void fileToDocument() {
 		document.add(new Field(SearchDocument.FIELD_FILENAME, ParsedFile.toAbsolutePath().toString(), StoredField.TYPE));
 
-		String content = this.fileToString();
+		String content = this.fileToString(ParsedFile);
 		document.add(new Field(SearchDocument.FIELD_CONTENT, content, TextField.TYPE_STORED));
 		for(String item : xmlTags){
-			Pattern p = Pattern.compile("[customtag](.+?)[/customtag]");
-			Matcher m = p.matcher("[customtag]"+item+"[/customtag]");
-			document.add(new Field(item, content, TextField.TYPE_STORED));
+			Pattern p = Pattern.compile("<" + item + ">(.+?)</" + item + ">");
+			Matcher m = p.matcher(this.fileToString(unParsedFile));
+			while (m.find()) {
+				document.add(new Field(item, m.group(1), TextField.TYPE_STORED));
+		    }
 		}
 
 		FieldType type = new FieldType();
@@ -75,10 +77,10 @@ public class SearchDocument {
 		document.add(new Field(SearchDocument.FIELD_CONTENT_TV, content, type));
 	}
 
-	private String fileToString() {
+	private String fileToString(Path file) {
 		byte[] bytes = null;
 		try {
-			bytes = Files.readAllBytes(ParsedFile);
+			bytes = Files.readAllBytes(file);
 		} catch (IOException e) {
 			System.err.printf("Error reading file %s: %s\n", ParsedFile.getFileName(), e.getMessage());
 		}
