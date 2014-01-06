@@ -41,7 +41,7 @@ public class ResultController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			parentController.handleOpenFile(model);
+			parentController.handleOpenFile(model,model.getResults());
 		}
 
 	}
