@@ -50,12 +50,8 @@ public class QueryController {
 			String queryString = view.getQueryString();
 			if (queryString.isEmpty()) {
 				view.dialogQueryEmpty();
-			} else if (queryString.matches(".*[0-9].*")) {
-				view.dialogQueryDigits();
 			} else if (!queryString.matches(".*[A-Za-z].*")) {
 				view.dialogQueryLetters();
-			} else if (queryString.isEmpty()) { // TODO remove isEmpty() replace with punctuation check
-				view.dialogQueryPuncutation();
 			} else {
 				List<Result> results = new ArrayList<Result>();
 				try {

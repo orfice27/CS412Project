@@ -54,25 +54,11 @@ public class QueryView extends JPanel {
 				JOptionPane.ERROR_MESSAGE);
 	}
 
-	public void dialogQueryDigits() {
-		JOptionPane.showMessageDialog(this,
-				"Numbers are not accepted. Try again.",
-				"Invalid query",
-				JOptionPane.ERROR_MESSAGE);
-	}
-
 	public void dialogQueryLetters() {
 		JOptionPane.showMessageDialog(this,
 				"Please enter a query with letters.",
 				"Invalid query",
 				JOptionPane.ERROR_MESSAGE);
-	}
-
-	public void dialogQueryPuncutation() {
-		JOptionPane.showMessageDialog(this,
-			"Please enter a sensible query.",
-			"Invalid query",
-			JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void dialogNoResults() {
