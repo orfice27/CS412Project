@@ -2,6 +2,9 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.JButton;
 
 import model.Result;
 import view.ResultView;
@@ -41,7 +44,12 @@ public class ResultController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			parentController.handleOpenFile(model);
+			List<JButton> buttons =view.getResultsViews();
+			for(int i = 0;i < buttons.size(); i++){
+				if(buttons.get(i) == (JButton)e.getSource()){
+					parentController.handleOpenFile(model,i);
+				}
+			}
 		}
 
 	}

@@ -28,6 +28,7 @@ public class FileDisplayTab extends JScrollPane {
 	private JTextArea textArea;
 	private String fileContent;
 	
+	
 	public FileDisplayTab(String file, List<String> resultsList) {
 		this.file = file;
 		container = new JPanel();
@@ -42,6 +43,7 @@ public class FileDisplayTab extends JScrollPane {
 	private void createTextView() {
 		textArea = new JTextArea();
 		textArea.setEditable(false);
+	
 		try {
 			fileContent= new String(readFile());
 
@@ -51,6 +53,7 @@ public class FileDisplayTab extends JScrollPane {
 			textArea.insert(new String("Error reading file"), 0);
 		}
 		container.add(textArea);
+		
 	}
 
 	private byte[] readFile() throws IOException {
@@ -60,23 +63,25 @@ public class FileDisplayTab extends JScrollPane {
 	public String getFile() {
 		return file;
 	}
-	public void prepareResultsText(Result result){
+	public void prepareResultsText(Result result, int chosenResult){
 		Highlighter h = textArea.getHighlighter();
 		h.removeAllHighlights();
 		String sHighlight = "<highlight>";
 		String eHighlight = "</highlight>";
-		for(String r:result.getResults()){
+		for(int i = 0; i < result.getResults().size() ;i++){
+			String r = result.getResults().get(i);
 			r=r.replaceAll(sHighlight, "");
 			r=r.replaceAll(eHighlight, "");
 		        int stringChar= 0;
 		        HighlightPainter p = DefaultHighlighter.DefaultPainter  ;
 		        while ((stringChar = fileContent.indexOf(r, stringChar)) >= 0) {
-		            try {
+		        	try {
 						h.addHighlight(stringChar, stringChar + r.length(), p);
 					} catch (BadLocationException e) {
 						e.printStackTrace();
 					}
-		            stringChar += r.length();
+		            if(i == chosenResult){textArea.setCaretPosition(stringChar);}
+		        	stringChar += r.length();
 		        }
 		}
 	}
