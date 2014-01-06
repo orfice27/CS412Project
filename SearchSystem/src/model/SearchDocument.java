@@ -4,7 +4,6 @@ package model;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,28 +23,22 @@ public class SearchDocument {
 	public static final String FIELD_FILENAME = "filename";
 	public static final String FIELD_CONTENT  = "content";
 	public static final String FIELD_CONTENT_TV = "content_tv";
-	ArrayList<String> xmlTags;
-	public static final String TITLE_XML  = "title";
-	public static final String PARAGRAPH_XML = "p";
-	public static final String BOLD_XML ="b";
-	public static final String SUBTITLE_XML = "subtitle"; 
-	public static final String COVERPAGE_XML = "coverpage";
 
-	private Path ParsedFile;
-	private Path unParsedFile;
+	private static final String[] XML_TAGS = {
+		"title",
+		"subtitle",
+		"coverpage",
+		"p",
+		"b"
+	};
 
+	private Path parsed;
+	private Path unparsed;
 	private Document document;
 
-	public SearchDocument(Path file, Path unparsedFile) {
-		xmlTags = new ArrayList<String>();
-		xmlTags.add(TITLE_XML);
-		xmlTags.add(SUBTITLE_XML);
-		xmlTags.add(BOLD_XML);
-		xmlTags.add(PARAGRAPH_XML);
-		xmlTags.add(COVERPAGE_XML);
-
-		this.ParsedFile = file;
-		this.unParsedFile = unparsedFile;
+	public SearchDocument(Path parsed, Path unparsed) {
+		this.parsed = parsed;
+		this.unparsed = unparsed;
 		document = new Document();
 		fileToDocument();
 	}
@@ -55,15 +48,16 @@ public class SearchDocument {
 	}
 
 	private void fileToDocument() {
-		document.add(new Field(SearchDocument.FIELD_FILENAME, ParsedFile.toAbsolutePath().toString(), StoredField.TYPE));
+		document.add(new Field(SearchDocument.FIELD_FILENAME, parsed.toAbsolutePath().toString(), StoredField.TYPE));
 
-		String content = this.fileToString(ParsedFile);
+		String content = this.fileToString(parsed);
 		document.add(new Field(SearchDocument.FIELD_CONTENT, content, TextField.TYPE_STORED));
-		for(String item : xmlTags){
-			Pattern p = Pattern.compile("<" + item + "(.+?)"+">(.+?)</" + item + ">");
-			Matcher m = p.matcher(this.fileToString(unParsedFile));
+
+		for(String tag : XML_TAGS){
+			Pattern p = Pattern.compile("<" + tag + "(.*)>(.+?)</" + tag + "(.*)>");
+			Matcher m = p.matcher(this.fileToString(unparsed));
 			while (m.find()) {
-				document.add(new Field(item, m.group(1), TextField.TYPE_STORED));
+				document.add(new Field(tag, m.group(2), TextField.TYPE_STORED));
 		    }
 		}
 
@@ -82,7 +76,7 @@ public class SearchDocument {
 		try {
 			bytes = Files.readAllBytes(file);
 		} catch (IOException e) {
-			System.err.printf("Error reading file %s: %s\n", ParsedFile.getFileName(), e.getMessage());
+			System.err.printf("Error reading file %s: %s\n", parsed.getFileName(), e.getMessage());
 		}
 		return new String(bytes);
 	}
