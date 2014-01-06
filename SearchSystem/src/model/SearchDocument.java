@@ -60,7 +60,7 @@ public class SearchDocument {
 		String content = this.fileToString(ParsedFile);
 		document.add(new Field(SearchDocument.FIELD_CONTENT, content, TextField.TYPE_STORED));
 		for(String item : xmlTags){
-			Pattern p = Pattern.compile("<" + item + ">(.+?)</" + item + ">");
+			Pattern p = Pattern.compile("<" + item + "(.+?)"+">(.+?)</" + item + ">");
 			Matcher m = p.matcher(this.fileToString(unParsedFile));
 			while (m.find()) {
 				document.add(new Field(item, m.group(1), TextField.TYPE_STORED));
