@@ -72,7 +72,7 @@ public class Searcher {
 			SearchDocument sDoc = new SearchDocument(parsedFiles.get(i), unparsedFiles.get(i));
 			iwriter.addDocument(sDoc.getDocument());
 		}
-		
+
 		iwriter.close();
 	}
 
@@ -126,14 +126,7 @@ public class Searcher {
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 					if (file.getFileName().toString().endsWith(".xml") && Files.isReadable(file)) {
-						Path parsedPath = FileSystems.getDefault().getPath(PARSED_DIRECTORY, file.toString().replaceFirst(root.toString(), ""));
-						try {
-							String parsedContents = new String(Files.readAllBytes(file)).replaceAll("\\.*?\\", "");
-							Files.createDirectories(parsedPath.getParent());
-							parsed.add(Files.write(parsedPath, parsedContents.getBytes(), StandardOpenOption.CREATE));
-						} catch (IOException e) {
-							System.err.printf("Error parsing file %s: %s%n", file, e.getMessage());
-						}
+						parsed.add(file);
 					}
 					return FileVisitResult.CONTINUE;
 				}
@@ -162,7 +155,7 @@ public class Searcher {
 		Query query = parser.parse(queryString);
 		List<Result> searchResults = this.handleResults(query, this.isearcher.search(query, null, 1000));
 		ireader.close();
-//		this.directory.close();
+		//		this.directory.close();
 		return searchResults;
 	}
 

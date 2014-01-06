@@ -15,6 +15,7 @@ public class Driver {
 					view.setVisible(true);
 				} catch (Exception e) {
 					System.err.printf("Error running search system%n");
+					e.printStackTrace();
 				}
 			}
 		});
