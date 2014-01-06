@@ -5,15 +5,14 @@ import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.SearchDocument;
 import model.Result;
+import model.SearchDocument;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -167,7 +166,9 @@ public class Searcher {
 			doc = isearcher.doc(id);
 			tokenStream = TokenSources.getAnyTokenStream(isearcher.getIndexReader(), id, SearchDocument.FIELD_CONTENT, analyzer);
 			try {
-				for (TextFragment frag : highlighter.getBestTextFragments(tokenStream, doc.get(SearchDocument.FIELD_CONTENT), false,10)) {
+				String content = doc.get(SearchDocument.FIELD_CONTENT);
+				int lineCount = content.length() - content.replaceAll("\n", "").length();
+				for (TextFragment frag : highlighter.getBestTextFragments(tokenStream, content, false, lineCount)) {
 					if ((frag != null) && (frag.getScore() > 0)) {
 						results.add((frag.toString()));
 					}
@@ -180,25 +181,6 @@ public class Searcher {
 		}
 
 		return searchResults;
-	}
-
-
-	public static void main(String[] args) {
-		if (args.length != 2) {
-			System.err.printf("Usage: %s [query] [file]\n", Searcher.class.getSimpleName());
-			System.exit(0);
-		}
-
-		String queryString = args[0];
-		Path fileOrDir = Paths.get(args[1]);
-
-		Searcher s = new Searcher();
-		try {
-			s.index(fileOrDir);
-			s.query(queryString);
-		} catch (IOException | ParseException e) {
-			System.err.printf("Error search '%s' for '%s': %s\n", fileOrDir, queryString, e.getMessage());
-		}
 	}
 
 }
