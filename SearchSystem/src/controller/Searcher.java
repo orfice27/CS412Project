@@ -66,10 +66,13 @@ public class Searcher {
 		this.analyzer = new StandardAnalyzer(Searcher.LUCENE_VERSION);
 		IndexWriterConfig config = new IndexWriterConfig(Searcher.LUCENE_VERSION, analyzer);
 		IndexWriter iwriter = new IndexWriter(this.directory, config);
-		for (Path file : parseFiles(root)) {
-			SearchDocument sDoc = new SearchDocument(file);
+		List<Path> parsedFiles = parseFiles(root);
+		List<Path> unparsedFiles = parseFilesLeaveXML(root);
+		for (int i = 0; i < parsedFiles.size(); i++) {
+			SearchDocument sDoc = new SearchDocument(parsedFiles.get(i), unparsedFiles.get(i));
 			iwriter.addDocument(sDoc.getDocument());
 		}
+		
 		iwriter.close();
 	}
 
@@ -107,6 +110,39 @@ public class Searcher {
 		return parsed;
 	}
 
+	/**
+	 * Returns list of paths that contains the files from the root path after
+	 * being parsed but still containing XML
+	 * 
+	 * @param root
+	 *            Path containing files to be parsed
+	 * @return list of paths that contains the files from the root path after
+	 *         being parsed
+	 */
+	private List<Path> parseFilesLeaveXML(final Path root) {
+		final List<Path> parsed = new ArrayList<Path>();
+		try {
+			Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					if (file.getFileName().toString().endsWith(".xml") && Files.isReadable(file)) {
+						Path parsedPath = FileSystems.getDefault().getPath(PARSED_DIRECTORY, file.toString().replaceFirst(root.toString(), ""));
+						try {
+							String parsedContents = new String(Files.readAllBytes(file)).replaceAll("\\.*?\\", "");
+							Files.createDirectories(parsedPath.getParent());
+							parsed.add(Files.write(parsedPath, parsedContents.getBytes(), StandardOpenOption.CREATE));
+						} catch (IOException e) {
+							System.err.printf("Error parsing file %s: %s%n", file, e.getMessage());
+						}
+					}
+					return FileVisitResult.CONTINUE;
+				}
+			});
+		} catch (IOException e) {
+			System.err.printf("Error parsing files: %s%n", e.getMessage());
+		}
+		return parsed;
+	}
 	/**
 	 * Queries the index for the specified queryStirng and return a list of
 	 * resulting matches

@@ -1,8 +1,12 @@
+
 package model;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -20,12 +24,28 @@ public class SearchDocument {
 	public static final String FIELD_FILENAME = "filename";
 	public static final String FIELD_CONTENT  = "content";
 	public static final String FIELD_CONTENT_TV = "content_tv";
+	ArrayList<String> xmlTags;
+	public static final String TITLE_XML  = "title";
+	public static final String PARAGRAPH_XML = "p";
+	public static final String BOLD_XML ="b";
+	public static final String SUBTITLE_XML = "subtitle"; 
+	public static final String COVERPAGE_XML = "coverpage";
 
-	private Path file;
+	private Path ParsedFile;
+	private Path unParsedFile;
+
 	private Document document;
 
-	public SearchDocument(Path file) {
-		this.file = file;
+	public SearchDocument(Path file, Path unparsedFile) {
+		xmlTags = new ArrayList<String>();
+		xmlTags.add(TITLE_XML);
+		xmlTags.add(SUBTITLE_XML);
+		xmlTags.add(BOLD_XML);
+		xmlTags.add(PARAGRAPH_XML);
+		xmlTags.add(COVERPAGE_XML);
+
+		this.ParsedFile = file;
+		this.unParsedFile = unparsedFile;
 		document = new Document();
 		fileToDocument();
 	}
@@ -35,10 +55,15 @@ public class SearchDocument {
 	}
 
 	private void fileToDocument() {
-		document.add(new Field(SearchDocument.FIELD_FILENAME, file.toAbsolutePath().toString(), StoredField.TYPE));
+		document.add(new Field(SearchDocument.FIELD_FILENAME, ParsedFile.toAbsolutePath().toString(), StoredField.TYPE));
 
 		String content = this.fileToString();
 		document.add(new Field(SearchDocument.FIELD_CONTENT, content, TextField.TYPE_STORED));
+		for(String item : xmlTags){
+			Pattern p = Pattern.compile("[customtag](.+?)[/customtag]");
+			Matcher m = p.matcher("[customtag]"+item+"[/customtag]");
+			document.add(new Field(item, content, TextField.TYPE_STORED));
+		}
 
 		FieldType type = new FieldType();
 		type.setIndexed(true);
@@ -53,9 +78,9 @@ public class SearchDocument {
 	private String fileToString() {
 		byte[] bytes = null;
 		try {
-			bytes = Files.readAllBytes(file);
+			bytes = Files.readAllBytes(ParsedFile);
 		} catch (IOException e) {
-			System.err.printf("Error reading file %s: %s\n", file.getFileName(), e.getMessage());
+			System.err.printf("Error reading file %s: %s\n", ParsedFile.getFileName(), e.getMessage());
 		}
 		return new String(bytes);
 	}
