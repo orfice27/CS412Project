@@ -3,13 +3,18 @@ package view;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
+import javax.swing.text.Highlighter.HighlightPainter;
+
+import model.Result;
 
 /**
  * Tab for displaying a full file from the index
@@ -21,16 +26,16 @@ public class FileDisplayTab extends JScrollPane {
 	private String file;
 	private JPanel container;
 	private JTextArea textArea;
-	private List<String> results;
+	private String fileContent;
+	
 	public FileDisplayTab(String file, List<String> resultsList) {
 		this.file = file;
 		container = new JPanel();
 	    container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
-	    results = new ArrayList<String>();
+	 
 		setViewportView(container);
 	    setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	    setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-	    prepareResultsText();
 	    createTextView();
 	}
 
@@ -38,7 +43,9 @@ public class FileDisplayTab extends JScrollPane {
 		textArea = new JTextArea();
 		textArea.setEditable(false);
 		try {
-			textArea.insert(new String(readFile()), 0);
+			fileContent= new String(readFile());
+
+			textArea.insert(fileContent,0);
 		} catch (IOException e) {
 			System.err.printf("Error reading file %s%n", file);
 			textArea.insert(new String("Error reading file"), 0);
@@ -53,12 +60,24 @@ public class FileDisplayTab extends JScrollPane {
 	public String getFile() {
 		return file;
 	}
-	public void prepareResultsText(){
+	public void prepareResultsText(Result result){
+		Highlighter h = textArea.getHighlighter();
+		h.removeAllHighlights();
 		String sHighlight = "<highlight>";
-		String eHighlight = "</highligt>";
-		for(String r:results){
-			r.replaceAll(sHighlight, "");
-			r.replaceAll(eHighlight, "");
+		String eHighlight = "</highlight>";
+		for(String r:result.getResults()){
+			r=r.replaceAll(sHighlight, "");
+			r=r.replaceAll(eHighlight, "");
+		        int stringChar= 0;
+		        HighlightPainter p = DefaultHighlighter.DefaultPainter  ;
+		        while ((stringChar = fileContent.indexOf(r, stringChar)) >= 0) {
+		            try {
+						h.addHighlight(stringChar, stringChar + r.length(), p);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+		            stringChar += r.length();
+		        }
 		}
 	}
 }

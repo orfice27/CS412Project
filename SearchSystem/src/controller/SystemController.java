@@ -55,6 +55,7 @@ public class SystemController {
 			tab = new FileDisplayTab(filepath, result.getResults());
 			view.addTab(result.getFileName(), tab);
 		}
+		tab.prepareResultsText(result);
 		view.setSelectedTab(tab);
 	}
 
