@@ -148,6 +148,7 @@ public class Searcher {
 		List<Result> searchResults = new ArrayList<Result>();
 		SimpleHTMLFormatter htmlFormatter = new SimpleHTMLFormatter("<highlight>", "</highlight>");
 		Highlighter highlighter = new Highlighter(htmlFormatter, new QueryScorer(query));
+        highlighter.setMaxDocCharsToAnalyze(Integer.MAX_VALUE);
 
 		ScoreDoc[] hits = topDocs.scoreDocs;
 		int id;
