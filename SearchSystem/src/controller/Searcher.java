@@ -49,6 +49,8 @@ public class Searcher {
 	private Directory directory;
 	private Analyzer analyzer;
 	private IndexSearcher isearcher;
+	private List<Path> parsedFiles;
+	private List<Path> unparsedFiles;
 
 	public Searcher() {
 	}
@@ -66,13 +68,11 @@ public class Searcher {
 		this.analyzer = new StandardAnalyzer(Searcher.LUCENE_VERSION);
 		IndexWriterConfig config = new IndexWriterConfig(Searcher.LUCENE_VERSION, analyzer);
 		IndexWriter iwriter = new IndexWriter(this.directory, config);
-		List<Path> parsedFiles = parseFiles(root);
-		List<Path> unparsedFiles = parseFilesLeaveXML(root);
+		parseFiles(root);
 		for (int i = 0; i < parsedFiles.size(); i++) {
 			SearchDocument sDoc = new SearchDocument(parsedFiles.get(i), unparsedFiles.get(i));
 			iwriter.addDocument(sDoc.getDocument());
 		}
-
 		iwriter.close();
 	}
 
@@ -85,8 +85,9 @@ public class Searcher {
 	 * @return list of paths that contains the files from the root path after
 	 *         being parsed
 	 */
-	private List<Path> parseFiles(final Path root) {
-		final List<Path> parsed = new ArrayList<Path>();
+	private void parseFiles(final Path root) {
+		parsedFiles = new ArrayList<Path>();
+		unparsedFiles = new ArrayList<Path>();
 		try {
 			Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
 				@Override
@@ -96,7 +97,8 @@ public class Searcher {
 						try {
 							String parsedContents = new String(Files.readAllBytes(file)).replaceAll("\\<.*?\\>", "");
 							Files.createDirectories(parsedPath.getParent());
-							parsed.add(Files.write(parsedPath, parsedContents.getBytes(), StandardOpenOption.CREATE));
+							parsedFiles.add(Files.write(parsedPath, parsedContents.getBytes(), StandardOpenOption.CREATE));
+							unparsedFiles.add(file);
 						} catch (IOException e) {
 							System.err.printf("Error parsing file %s: %s%n", file, e.getMessage());
 						}
@@ -107,35 +109,8 @@ public class Searcher {
 		} catch (IOException e) {
 			System.err.printf("Error parsing files: %s%n", e.getMessage());
 		}
-		return parsed;
 	}
 
-	/**
-	 * Returns list of paths that contains the files from the root path after
-	 * being parsed but still containing XML
-	 * 
-	 * @param root
-	 *            Path containing files to be parsed
-	 * @return list of paths that contains the files from the root path after
-	 *         being parsed
-	 */
-	private List<Path> parseFilesLeaveXML(final Path root) {
-		final List<Path> parsed = new ArrayList<Path>();
-		try {
-			Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					if (file.getFileName().toString().endsWith(".xml") && Files.isReadable(file)) {
-						parsed.add(file);
-					}
-					return FileVisitResult.CONTINUE;
-				}
-			});
-		} catch (IOException e) {
-			System.err.printf("Error parsing files: %s%n", e.getMessage());
-		}
-		return parsed;
-	}
 	/**
 	 * Queries the index for the specified queryStirng and return a list of
 	 * resulting matches
