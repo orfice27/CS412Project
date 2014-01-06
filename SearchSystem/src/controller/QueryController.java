@@ -24,7 +24,7 @@ import view.QueryView;
  */
 public class QueryController {
 
-	private static final Path DICTIONARY = Paths.get("theologicaldictionary.txt.txt");
+	private static final Path DICTIONARY = Paths.get("dictionary", "theological.txt");
 	private static final Path INDEX_DIRECTORY = Paths.get("data set", "rel200");
 
 	private QueryView view;
