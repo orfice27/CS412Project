@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +24,7 @@ import view.QueryView;
  */
 public class QueryController {
 
-	private static final Path DICTIONARY = Paths.get("theologicaldictionary.txt.txt");
+	private static final Path DICTIONARY = Paths.get("dictionary", "theological.txt");
 	private static final Path INDEX_DIRECTORY = Paths.get("data set", "rel200");
 
 	private QueryView view;
@@ -33,8 +34,10 @@ public class QueryController {
 	public QueryController(QueryView view, SystemController parentController) {
 		this.view = view;
 		this.parentController = parentController;
-		this.view.setAutoCompleteDictionary(getDictionary());
 		view.addSubmitQueryListener(new SubmitQueryListener());
+		for (String possibility : getDictionary()) {
+			this.view.addAutoComplete(possibility);
+		}
 		searcher = new Searcher();
 		try {
 			searcher.index(INDEX_DIRECTORY);
@@ -57,6 +60,7 @@ public class QueryController {
 				try {
 					results = searcher.query(queryString);
 					parentController.addQuery(queryString);
+					addAutoComplete(queryString);
 				} catch (IOException | ParseException ex) {
 					System.err.printf("Error searching index for '%s': %s%n", queryString, ex.getMessage());
 				}
@@ -68,6 +72,15 @@ public class QueryController {
  			}
 		}
 
+	}
+
+	private void addAutoComplete(String queryString) {
+		view.addAutoComplete(queryString);
+		try {
+			Files.write(DICTIONARY, ("\n" + queryString).getBytes(), StandardOpenOption.APPEND);
+		} catch (IOException e) {
+			System.err.printf("Error saving query '%s' to auto complete dictionary: %s%n", queryString, e.getMessage());
+		}
 	}
 
 	private Set<String> getDictionary() {

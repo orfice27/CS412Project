@@ -2,7 +2,6 @@ package view;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -41,10 +40,8 @@ public class QueryView extends JPanel {
 		return inputField.getText();
 	}
 
-	public void setAutoCompleteDictionary(Set<String> dictionary) {
-		for (String possibility : dictionary) {
-			inputField.addPossibility(possibility);
-		}
+	public void addAutoComplete(String possibility) {
+		inputField.addPossibility(possibility);
 	}
 
 	public void dialogQueryEmpty() {
