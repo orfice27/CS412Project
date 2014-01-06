@@ -28,8 +28,8 @@ public class ResultController {
 		String fileName = model.getFileName();
 		view.updateFileName(fileName);
 		view.updateFilePath(fileName, model.getFilePath());
-		for (String result : model.getResults()) {
-			view.appendResult(fileName, result);
+		for (int i =0 ; i< model.getResults().size() && i < 10 ; i++) {
+			view.appendResult(fileName, model.getResults().get(i));
 		}
 	}
 
