@@ -43,7 +43,7 @@ import org.apache.lucene.util.Version;
  */
 public class Searcher {
 
-	private static final Version LUCENE_VERSION = Version.LUCENE_46;
+	public static final Version LUCENE_VERSION = Version.LUCENE_46;
 	private static final String PARSED_DIRECTORY = "parsed";
 
 	private Directory directory;
@@ -192,7 +192,7 @@ public class Searcher {
 			doc = isearcher.doc(id);
 			tokenStream = TokenSources.getAnyTokenStream(isearcher.getIndexReader(), id, SearchDocument.FIELD_CONTENT, analyzer);
 			try {
-				for (TextFragment frag : highlighter.getBestTextFragments(tokenStream, doc.get(SearchDocument.FIELD_CONTENT), false, 10)) {
+				for (TextFragment frag : highlighter.getBestTextFragments(tokenStream, doc.get(SearchDocument.FIELD_CONTENT), false,10)) {
 					if ((frag != null) && (frag.getScore() > 0)) {
 						results.add((frag.toString()));
 					}
