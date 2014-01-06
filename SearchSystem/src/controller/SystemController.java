@@ -48,14 +48,14 @@ public class SystemController {
 		view.setSelectedTab(tab);
 	}
 
-	public void handleOpenFile(Result result,int chosenOne)  {
+	public void handleOpenFile(Result result, int selectedResultIndex) {
 		String filepath = result.getFilePath();
 		FileDisplayTab tab = view.getOpenFileTab(filepath);
 		if (tab == null) {
 			tab = new FileDisplayTab(filepath, result.getResults());
 			view.addTab(result.getFileName(), tab);
 		}
-		tab.prepareResultsText(result,chosenOne);
+		tab.highlightResults(result, selectedResultIndex);
 		view.setSelectedTab(tab);
 	}
 

@@ -32,7 +32,6 @@ public class ResultView extends JPanel {
 	private JButton filePathView;
 	private List<JButton> resultsViews;
 
-
 	public ResultView() {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBorder(new EmptyBorder(5, 10, 5, 10));
@@ -81,12 +80,13 @@ public class ResultView extends JPanel {
 	public void addOpenFileListener(ActionListener listener) {
 		fileNameView.addActionListener(listener);
 		filePathView.addActionListener(listener);
-
 		for (JButton resultsView : resultsViews) {
 			resultsView.addActionListener(listener);
 		}
 	}
+
 	public List<JButton> getResultsViews() {
 		return resultsViews;
 	}
+
 }

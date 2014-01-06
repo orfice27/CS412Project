@@ -44,12 +44,15 @@ public class ResultController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			List<JButton> buttons =view.getResultsViews();
-			for(int i = 0;i < buttons.size(); i++){
-				if(buttons.get(i) == (JButton)e.getSource()){
-					parentController.handleOpenFile(model,i);
+			JButton source = (JButton) e.getSource();
+			List<JButton> buttons = view.getResultsViews();
+			for (int i = 0; i < buttons.size(); i++) {
+				if (buttons.get(i) == source) {
+					parentController.handleOpenFile(model, i);
+					return;
 				}
 			}
+			parentController.handleOpenFile(model, -1);
 		}
 
 	}
