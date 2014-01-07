@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -21,16 +22,19 @@ public class ResultView extends JPanel {
 
 	private static final String TEMPLATE_FILENAME = "<html><span style='color: blue; text-decoration: underline; font-size: 16px;'>%s</span></html>";
 	private static final String TEMPLATE_FILEPATH = "<html><span style='color: green; font-size: 14px;'>%s</span></html>";
-	private static final String TEMPLATE_RESULT = "<html><span style='color: #444; font-size: 13px;'>%d. %s</span></html>";
+	private static final String TEMPLATE_RESULT = "<html><span style='color: rgb(68, 68, 68); font-size: 13px;'>%d. %s</span></html>";
 	private static final String TEMPLATE_HIGHLIGHT_START = "<span style='background-color:yellow;'>";
 	private static final String TEMPLATE_HIGHLIGHT_END = "</span>";
+	private static final String TEMPLATE_ADDITIONAL_RESULTS = "<html><span style='color: rgb(102, 102, 102); font-size: 11px;'>+ %d more results. Display %d more...</span></html>";
 	private static final String TOOLTIP_FILENAME = "Open file '%s'";
 	private static final String TOOLTIP_FILEPATH = "Open file '%s'";
 	private static final String TOOLTIP_RESULT = "Open result in file '%s'";
+	private static final int RESULTS_PAGE_SIZE = 10;
 
 	private JButton fileNameView;
 	private JButton filePathView;
 	private List<JButton> resultsViews;
+	private JButton extras;
 
 	public ResultView() {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -44,6 +48,9 @@ public class ResultView extends JPanel {
 		commomButton(filePathView);
 		add(filePathView);
 
+		extras = new JButton();
+		commomButton(extras);
+
 		resultsViews = new ArrayList<JButton>();
 	}
 
@@ -55,6 +62,24 @@ public class ResultView extends JPanel {
 	public void updateFilePath(String fileName, String filePath) {
 		filePathView.setText(String.format(TEMPLATE_FILEPATH, filePath));
 		filePathView.setToolTipText(String.format(TOOLTIP_FILEPATH, fileName));
+	}
+
+	public void appendResultPage(String fileName, List<String> results) {
+		int offset = resultsViews.size();
+		int loopEnd = Math.min(offset + RESULTS_PAGE_SIZE, results.size());
+		for (int i = offset; i < loopEnd; i++) {
+			appendResult(fileName, results.get(i));
+		}
+		remove(extras);
+		if (resultsViews.size() < results.size()) {
+			int more = results.size() - resultsViews.size();
+			extras.setText(String.format(TEMPLATE_ADDITIONAL_RESULTS, more, Math.min(more, RESULTS_PAGE_SIZE)));
+			add(extras);
+		}
+		Container parent = getParent();
+		if (parent != null) {
+			parent.validate();
+		}
 	}
 
 	public void appendResult(String fileName, String result) {
@@ -83,6 +108,10 @@ public class ResultView extends JPanel {
 		for (JButton resultsView : resultsViews) {
 			resultsView.addActionListener(listener);
 		}
+	}
+
+	public void addMoreResultsListener(ActionListener listener) {
+		extras.addActionListener(listener);
 	}
 
 	public List<JButton> getResultsViews() {

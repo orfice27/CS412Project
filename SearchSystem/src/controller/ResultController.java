@@ -31,13 +31,12 @@ public class ResultController {
 		String fileName = model.getFileName();
 		view.updateFileName(fileName);
 		view.updateFilePath(fileName, model.getFilePath());
-		for (int i =0 ; i< model.getResults().size() && i < 10 ; i++) {
-			view.appendResult(fileName, model.getResults().get(i));
-		}
+		view.appendResultPage(fileName, model.getResults());
 	}
 
 	private void addListeners() {
 		view.addOpenFileListener(new OpenFileListener());
+		view.addMoreResultsListener(new MoreResultsListener());
 	}
 
 	class OpenFileListener implements ActionListener {
@@ -55,6 +54,15 @@ public class ResultController {
 			parentController.handleOpenFile(model, -1);
 		}
 
+	}
+
+	class MoreResultsListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			view.appendResultPage(model.getFileName(), model.getResults());
+		}
+		
 	}
 
 }
