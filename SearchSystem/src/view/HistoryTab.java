@@ -52,6 +52,7 @@ public class HistoryTab extends JScrollPane {
 		historyEntryView.setText(String.format(TEMPLATE_HISTORY_ENTRY, dateFormat.format(time), query));
 		historyEntryViews.add(historyEntryView);
 		container.add(historyEntryView);
+		container.validate();
 	}
 
 	public void clearHistory() {
