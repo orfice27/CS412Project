@@ -72,7 +72,7 @@ public class FileDisplayTab extends JScrollPane {
 					System.err.printf("Error applying highlight at position %d: %s%n", position, e.getMessage());
 				}
 				if (i == selectedResultIndex) {
-					textArea.setCaretPosition(position);
+					textArea.setCaretPosition(position + (r.length() / 2));
 				}
 				position += r.length();
 			}
