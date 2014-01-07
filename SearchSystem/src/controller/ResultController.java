@@ -61,6 +61,7 @@ public class ResultController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			view.appendResultPage(model.getFileName(), model.getResults());
+			view.addOpenFileListener(new OpenFileListener());
 		}
 		
 	}
