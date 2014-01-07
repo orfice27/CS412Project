@@ -20,7 +20,7 @@ import org.json.simple.JSONValue;
  */
 public class History extends Observable {
 
-	private static final String DATE_FORMAT = "Y/M/d H:m:s:S Z";
+	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss:SSS Z";
 
 	private SortedSet<HistoryEntry> history;
 	private SimpleDateFormat dateFormat;
@@ -29,7 +29,7 @@ public class History extends Observable {
 	public History(Path file) {
 		this.file = file;
 		history = new TreeSet<HistoryEntry>();
-		dateFormat = new SimpleDateFormat(History.DATE_FORMAT);
+		dateFormat = new SimpleDateFormat(DATE_FORMAT);
 	}
 
 	public void addQuery(String query) {
