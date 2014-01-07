@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -47,7 +46,7 @@ public class SystemView extends JFrame {
 		setResizable(true);
 
 		JPanel container = new JPanel();
-		container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
+		container.setLayout(new BorderLayout());
 
 		queryView = new QueryView();
 		new QueryController(queryView, controller);
