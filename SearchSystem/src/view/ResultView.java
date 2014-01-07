@@ -39,6 +39,7 @@ public class ResultView extends JPanel {
 	public ResultView() {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBorder(new EmptyBorder(5, 10, 5, 10));
+		setOpaque(false);
 
 		fileNameView = new JButton();
 		commomButton(fileNameView);

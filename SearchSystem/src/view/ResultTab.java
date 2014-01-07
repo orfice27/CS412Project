@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.Color;
+
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -17,6 +19,7 @@ public class ResultTab extends JScrollPane {
 	public ResultTab(String queryString) {
 		this.queryString = queryString;
 		container = new JPanel();
+		container.setBackground(Color.WHITE);
 	    container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
 
 		setViewportView(container);

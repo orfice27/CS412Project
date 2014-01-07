@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Tab for displaying query history
@@ -31,6 +32,8 @@ public class HistoryTab extends JScrollPane {
 		dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
 		container = new JPanel();
+		container.setBackground(Color.WHITE);
+		container.setBorder(new EmptyBorder(10, 10, 10, 10));
 		container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
 
 		setViewportView(container);
